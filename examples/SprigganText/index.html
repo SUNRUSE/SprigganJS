@@ -1,0 +1,14 @@
+<html>
+    <body>
+        <div id="loading">Now loading... (please ensure that JavaScript is enabled)</div>
+        <script src="../../spriggan.js"></script>
+        <script>
+            function SprigganBoot(contentManager) {
+                contentManager.add(SprigganText, "path/to/text/file")
+                return function() {
+                    alert(contentManager.get(SprigganText,  "path/to/text/file"))
+                }
+            }
+        </script>
+    </body>
+</html>
