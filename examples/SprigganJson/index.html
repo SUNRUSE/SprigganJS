@@ -1,0 +1,15 @@
+<html>
+    <body>
+        <div id="loading">Now loading... (please ensure that JavaScript is enabled)</div>
+        <script src="../../spriggan.js"></script>
+        <script>
+            function SprigganBoot(contentManager) {
+                contentManager.add(SprigganJson, "path/to/json/file")
+                return function() {
+                    alert(contentManager.get(SprigganJson, "path/to/json/file")["this"])
+                    alert(contentManager.get(SprigganJson, "path/to/json/file")["and"])
+                }
+            }
+        </script>
+    </body>
+</html>

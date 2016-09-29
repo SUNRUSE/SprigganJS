@@ -107,3 +107,17 @@ function SprigganText(url, onSuccess) {
     request.send()
     return function() {}
 }
+
+function SprigganJson(url, onSuccess) {
+    return SprigganText(url, function(text){
+        try {
+            if (window.JSON)
+                onSuccess(JSON.parse(text)) // Chrome, Firefox, Edge.
+            else
+                onSuccess(eval("(" + text + ")"))
+        } catch(e) {
+            throw new Error("Failed to parse \"" + url + "\" as JSON")
+        }
+        onSuccess()
+    })
+}

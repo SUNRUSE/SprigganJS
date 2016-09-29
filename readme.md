@@ -87,3 +87,15 @@ Reads the text from a file as a string.
             alert(contentManager.get(SprigganText,  "path/to/text/file"))
         }
     }
+    
+### SprigganJson
+
+Reads the text from a file as a JSON object.
+
+    function SprigganBoot(contentManager) {
+        contentManager.add(SprigganJson, "path/to/json/file")
+        return function() {
+            alert(contentManager.get(SprigganJson, "path/to/json/file")["this"])
+            alert(contentManager.get(SprigganJson, "path/to/json/file")["and"])
+        }
+    }
