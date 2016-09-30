@@ -99,3 +99,12 @@ Reads the text from a file as a JSON object.
             alert(contentManager.get(SprigganJson, "path/to/json/file")["and"])
         }
     }
+
+### SprigganViewport
+
+Represents a virtual display.  Created with a fixed resolution which is then
+scaled to fit the user's display or browser window.
+
+    var width = 320  // pixels
+    var height = 240 // pixels
+    new SprigganViewport(width, height)

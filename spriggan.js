@@ -121,3 +121,37 @@ function SprigganJson(url, onSuccess) {
         onSuccess()
     })
 }
+
+
+var SprigganAllViewports = []
+
+window.onresize = function() {
+    for (var i = 0; i < SprigganAllViewports.length; i++) SprigganAllViewports[i].resize()
+}
+
+function SprigganViewport(width, height) {
+    this.width = width
+    this.height = height
+    
+    this.element = document.createElement("DIV")
+    this.element.style.position = "fixed"
+    this.element.style.width = width + "em"
+    this.element.style.height = height + "em"
+    this.element.style.overflow = "hidden"
+
+    document.body.appendChild(this.element)
+    
+    this.resize()
+    
+    SprigganAllViewports.push(this)
+}
+
+SprigganViewport.prototype.resize = function() {
+    var windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth
+    var windowHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+    
+    this.element.style.fontSize = Math.min(windowWidth / this.width, windowHeight / this.height) + "px"
+        
+    this.element.style.left = ((windowWidth - this.element.clientWidth) / 2) + "px"
+    this.element.style.top = ((windowHeight - this.element.clientHeight) / 2) + "px"
+}
