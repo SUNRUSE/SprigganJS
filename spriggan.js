@@ -5,6 +5,13 @@ window.onerror = function() {
     while (SprigganAllContentManagers.length) SprigganAllContentManagers[0].dispose()
 }
 
+function SprigganRemoveByValue(array, value) {
+    for (var i = 0; i < array.length; i++) if (array[i] == value) {
+        array.splice(i, 1)
+        return
+    }
+}
+
 function SprigganSetLoadingText(text) {
     var element = document.getElementById("loading")
     if (!element) return
@@ -42,7 +49,7 @@ function SprigganContentManager(configuration) {
 }
 
 SprigganMakeDisposable(SprigganContentManager, function(){
-    SprigganAllContentManagers.splice(SprigganAllContentManagers.indexOf(this), 1)
+    SprigganRemoveByValue(SprigganAllContentManagers, this)
     while(this.content.length) {
         var content = this.content.pop()
         if (content.loaded) content.dispose()
@@ -243,7 +250,7 @@ function SprigganMakeChild(type) {
         this.parent.element.appendChild(this.element)
     })
     type.prototype.onDisposal.push(function(){
-        this.parent.children.splice(this.parent.children.indexOf(this), 1)
+        SprigganRemoveByValue(this.parent.children, this)
     })
 }
 
@@ -288,7 +295,7 @@ SprigganViewport.prototype.resize = function() {
 
 SprigganMakeConstructable(SprigganViewport)
 SprigganMakeDisposable(SprigganViewport, function() {
-    SprigganAllViewports.splice(SprigganAllViewports.indexOf(this), 1)
+    SprigganRemoveByValue(SprigganAllViewports, this)
 })
 SprigganMakeParent(SprigganViewport)
 SprigganMakeElementWrapper(SprigganViewport)
@@ -322,7 +329,7 @@ function SprigganSprite(parent, contentManager, spriteSheetUrl) {
 
 SprigganMakeConstructable(SprigganSprite)
 SprigganMakeDisposable(SprigganSprite, function(){
-    this.spriteSheet.sprites.splice(this.spriteSheet.sprites.indexOf(this), 1)
+    SprigganRemoveByValue(this.spriteSheet.sprites, this)
 })
 SprigganMakeElementWrapper(SprigganSprite)
 SprigganMakeChild(SprigganSprite)
