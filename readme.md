@@ -141,6 +141,8 @@ SprigganGroup.
         // Not called if the animation is interrupted by another call to .play or .loop.
     })
     
+    sprite.loop("animation name")
+    
     sprite.dispose() // Deletes the sprite.
     
 ### SprigganTimer

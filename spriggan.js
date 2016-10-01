@@ -415,3 +415,16 @@ SprigganSprite.prototype.play = function(animationName, then) {
     }
     NextFrame()
 }
+
+SprigganSprite.prototype.loop = function(animationName) {
+    var sprite = this
+    var frames = sprite.spriteSheet.getAnimationByName(animationName)
+    if (frames.length == 1) {
+        sprite.setFrame(frames[0])
+    } else {
+        function PlayAgain() {
+            sprite.play(animationName, PlayAgain)
+        }
+        PlayAgain()
+    }
+}
