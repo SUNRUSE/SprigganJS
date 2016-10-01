@@ -47,6 +47,7 @@ function SprigganTimer(seconds, configuration) {
     this.elapsed = 0
     this.done = false
     this.timeout = null
+    this.interval = null
 }
 
 SprigganTimer.prototype.pause = function() {
@@ -55,6 +56,10 @@ SprigganTimer.prototype.pause = function() {
         this.started = null
         clearTimeout(this.timeout)
         this.timeout = null
+        if (this.interval) {
+            clearInterval(this.interval)
+            this.interval = null
+        }
         if (this.configuration.paused) this.configuration.paused.call(this, this)
     }
 }
@@ -65,8 +70,17 @@ SprigganTimer.prototype.resume = function() {
         this.timeout = setTimeout(function(){
             timer.done = true
             timer.timeout = null
+            if (timer.interval) {
+                clearInterval(timer.interval)
+                timer.interval = null
+            }
             if (timer.configuration.completed) timer.configuration.completed.call(timer, timer)
         }, this.milliseconds - this.elapsedMilliseconds())
+        if (this.configuration.progress) {
+            this.interval = setInterval(function(){
+                timer.configuration.progress.call(timer, timer)
+            }, 1000 / 20)
+        }
         this.started = new Date().getTime()
         if (this.configuration.resumed) this.configuration.resumed.call(this, this)
     }

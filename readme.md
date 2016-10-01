@@ -180,6 +180,9 @@ Implements a pausable timer.
         },
         completed: function() {
             console.log("Completed; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+        },
+        progress: function() {
+            console.log("Progress update; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
         }
     })
     
@@ -227,16 +230,33 @@ Implements a pausable timer.
     }, 400)
     
     /* Output varies, but should be approximately:
-        Created; 0msec (0)
-        Resumed; 0msec (0)
-        Started; 0msec (0)
-        Check; 431msec (0.47888888888888886)
-        Paused; 431msec (0.47888888888888886)
-        Check; 431msec (0.47888888888888886)
-        Check; 431msec (0.47888888888888886)
-        Resumed; 431msec (0.47888888888888886)
-        Check; 435msec (0.48333333333333334)
-        Check; 846msec (0.94)
-        Completed; 900msec (1)
-        Check; 900msec (1)
+        Created; 0msec 0sec (0)
+        Resumed; 0msec 0sec (0)
+        Started; 2msec 0.002sec (0.0022222222222222222)
+        Progress update; 71msec 0.071sec (0.07888888888888888)
+        Progress update; 100msec 0.1sec (0.11111111111111112)
+        Progress update; 151msec 0.152sec (0.1688888888888889)
+        Progress update; 201msec 0.201sec (0.22333333333333333)
+        Progress update; 256msec 0.256sec (0.28444444444444444)
+        Progress update; 303msec 0.303sec (0.33666666666666667)
+        Progress update; 357msec 0.357sec (0.3966666666666666)
+        Progress update; 409msec 0.409sec (0.45444444444444443)
+        Check; 412msec 0.412sec (0.45777777777777773)
+        Paused; 413msec 0.413sec (0.45888888888888885)
+        Check; 413msec 0.413sec (0.45888888888888885)
+        Check; 413msec 0.413sec (0.45888888888888885)
+        Resumed; 413msec 0.413sec (0.45888888888888885)
+        Check; 414msec 0.414sec (0.45999999999999996)
+        Progress update; 468msec 0.468sec (0.52)
+        Progress update; 513msec 0.513sec (0.57)
+        Progress update; 563msec 0.563sec (0.6255555555555555)
+        Progress update; 633msec 0.633sec (0.7033333333333334)
+        Progress update; 662msec 0.662sec (0.7355555555555556)
+        Progress update; 712msec 0.712sec (0.7911111111111111)
+        Progress update; 762msec 0.762sec (0.8466666666666667)
+        Progress update; 812msec 0.812sec (0.9022222222222223)
+        Check; 815msec 0.815sec (0.9055555555555554) 
+        Progress update; 863msec 0.863sec (0.9588888888888889)
+        Completed; 900msec 0.9sec (1)
+        Check; 900msec 0.9sec (1)
     */
