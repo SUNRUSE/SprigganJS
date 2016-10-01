@@ -209,7 +209,6 @@ function SprigganSpriteSheet(url, onSuccess) {
         if (!image) return
         
         var value = {
-            animations: {},
             image: image.cloneNode(true),
             sprites: sprites
         }
@@ -236,6 +235,8 @@ function SprigganSpriteSheet(url, onSuccess) {
         value.image.style.width = image.width + "em"
         value.image.style.height = image.height + "em"
         
+        var animations = {}
+        
         for (var key in json.animations) {
             var animation = json.animations[key]
             var converted = []
@@ -251,7 +252,12 @@ function SprigganSpriteSheet(url, onSuccess) {
                     duration: frame[6]
                 })
             }
-            value.animations[key] = converted
+            animations[key] = converted
+        }
+        
+        value.getAnimationByName = function(name) {
+            for (var key in animations) if (key == name) return animations[key]
+            throw new Error("Animation \"" + name + "\" does not exist in this SprigganSpriteSheet")
         }
         
         onSuccess(value)
@@ -383,15 +389,18 @@ SprigganMakeDisposable(SprigganSprite, function(){
 SprigganMakeElementWrapper(SprigganSprite)
 SprigganMakeChild(SprigganSprite)
 
+SprigganSprite.prototype.setFrame = function(frame) {
+    this.imageElement.style.left = frame.imageLeft
+    this.imageElement.style.top = frame.imageTop
+    this.element.style.width = frame.wrapperWidth
+    this.element.style.height = frame.wrapperHeight
+    this.element.style.marginLeft = frame.wrapperMarginLeft
+    this.element.style.marginTop = frame.wrappedMarginTop
+}
+
 SprigganSprite.prototype.play = function(animationName, then) {
     var sprite = this
-    var frames
-    for (var key in sprite.spriteSheet.animations) {
-        if (key != animationName) continue
-        frames = sprite.spriteSheet.animations[key]
-        break
-    }
-    if(!frames) throw new Error("Animation \"" + animationName + "\" does not exist in this SprigganSpriteSheet")
+    var frames = sprite.spriteSheet.getAnimationByName(animationName)
     var frame = 0
     function NextFrame() {
         if (frame == frames.length) {
@@ -399,12 +408,7 @@ SprigganSprite.prototype.play = function(animationName, then) {
             return
         }
         var currentFrame = frames[frame++]
-        sprite.imageElement.style.left = currentFrame.imageLeft
-        sprite.imageElement.style.top = currentFrame.imageTop
-        sprite.element.style.width = currentFrame.wrapperWidth
-        sprite.element.style.height = currentFrame.wrapperHeight
-        sprite.element.style.marginLeft = currentFrame.wrapperMarginLeft
-        sprite.element.style.marginTop = currentFrame.wrappedMarginTop
+        sprite.setFrame(currentFrame)
         new SprigganTimer(currentFrame.duration, {
             completed: NextFrame
         }).resume()
