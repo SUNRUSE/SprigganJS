@@ -302,6 +302,7 @@ function SprigganMakeElementWrapper(type) {
 
 function SprigganMakeChild(type) {
     type.prototype.onConstruction.push(function(){
+        this.parent.children.push(this)
         this.parent.element.appendChild(this.element)
     })
     type.prototype.onDisposal.push(function(){
@@ -313,9 +314,51 @@ function SprigganMakeParent(type) {
     type.prototype.onConstruction.push(function(){
         this.children = []
     })
+    type.prototype.onPausing.push(function(){
+        for (var i = 0; i < this.children.length; i++) this.children[i].pause()
+    })
+    type.prototype.onResuming.push(function(){
+        for (var i = 0; i < this.children.length; i++) this.children[i].resume()
+    })
     type.prototype.onDisposal.push(function(){
         while (this.children.length) this.children[0].dispose()
     })
+}
+
+function SprigganMakePausable(type, onPausing, onResuming) {
+    type.prototype.onPausing = []
+    type.prototype.onResuming = []
+    
+    if (onPausing) type.prototype.onPausing.push(onPausing)
+    if (onResuming) type.prototype.onResuming.push(onResuming)
+    
+    type.prototype.onConstruction.push(function(){
+        if (this.parent) 
+            this.paused = this.parent.paused
+        else
+            this.paused = false
+    })
+    type.prototype.onDisposing = function() {
+        this.pause()
+    }
+    
+    type.prototype.pause = function() {
+        // We don't check if this is paused here as this would break the following scenario:
+        // - Sprite inside group inside viewport.
+        // - Pause group.
+        // - Resume sprite.
+        // - Sprite is now animating even though group is paused.
+        // - Pause viewport.
+        // - It is expected that this pauses everything inside the viewport, but as the group is paused it does not recurse down to the sprite.
+        this.paused = true
+        for (var i = 0; i < this.onPausing.length; i++) this.onPausing[i].call(this, this)
+    }
+    
+    type.prototype.resume = function() {
+        // We don't check if this is paused here for the same reason as outlined in pause().
+        this.paused = false
+        for (var i = 0; i < this.onResuming.length; i++) this.onResuming[i].call(this, this)
+    }
 }
 
 var SprigganAllViewports = []
@@ -352,6 +395,7 @@ SprigganMakeConstructable(SprigganViewport)
 SprigganMakeDisposable(SprigganViewport, function() {
     SprigganRemoveByValue(SprigganAllViewports, this)
 })
+SprigganMakePausable(SprigganViewport)
 SprigganMakeParent(SprigganViewport)
 SprigganMakeElementWrapper(SprigganViewport)
 
@@ -365,6 +409,7 @@ function SprigganGroup(parent) {
 
 SprigganMakeConstructable(SprigganGroup)
 SprigganMakeDisposable(SprigganGroup)
+SprigganMakePausable(SprigganGroup)
 SprigganMakeElementWrapper(SprigganGroup)
 SprigganMakeParent(SprigganGroup)
 SprigganMakeChild(SprigganGroup)
@@ -386,6 +431,11 @@ SprigganMakeConstructable(SprigganSprite)
 SprigganMakeDisposable(SprigganSprite, function(){
     SprigganRemoveByValue(this.spriteSheet.sprites, this)
 })
+SprigganMakePausable(SprigganSprite, function(){
+    if (this.animation) this.animation.pause()
+}, function(){
+    if (this.animation) this.animation.resume()
+})
 SprigganMakeElementWrapper(SprigganSprite)
 SprigganMakeChild(SprigganSprite)
 
@@ -400,6 +450,7 @@ SprigganSprite.prototype.setFrame = function(frame) {
 
 SprigganSprite.prototype.play = function(animationName, then) {
     var sprite = this
+    if (sprite.animation) sprite.animation.pause()
     var frames = sprite.spriteSheet.getAnimationByName(animationName)
     var frame = 0
     function NextFrame() {
@@ -409,15 +460,17 @@ SprigganSprite.prototype.play = function(animationName, then) {
         }
         var currentFrame = frames[frame++]
         sprite.setFrame(currentFrame)
-        new SprigganTimer(currentFrame.duration, {
+        sprite.animation = new SprigganTimer(currentFrame.duration, {
             completed: NextFrame
-        }).resume()
+        })
+        if (!sprite.paused) sprite.animation.resume()
     }
     NextFrame()
 }
 
 SprigganSprite.prototype.loop = function(animationName) {
     var sprite = this
+    if (sprite.animation) sprite.animation.pause()
     var frames = sprite.spriteSheet.getAnimationByName(animationName)
     if (frames.length == 1) {
         sprite.setFrame(frames[0])
