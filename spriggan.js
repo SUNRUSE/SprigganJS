@@ -378,6 +378,23 @@ function SprigganMakeClickable(type) {
     })
 }
 
+function SprigganMakeMovable(type) {
+    type.prototype.onConstruction.push(function(){
+        this.move(0, 0)
+    })
+    
+    type.prototype.move = function(x, y) {
+        if ("transform" in this.element.style) {
+             // IE10+, Edge, Firefox, Chrome.
+            this.element.style.transform = "translate(" + x + "em, " + y + "em)"
+        } else {
+            // IE9-.
+            this.element.style.left = x  + "em"
+            this.element.style.top = y  + "em"
+        }
+    }
+}
+
 var SprigganAllViewports = []
 
 window.onresize = function() {
@@ -423,8 +440,6 @@ function SprigganGroup(parent, clicked) {
     this.clicked = clicked
     this.construct()
     this.element.style.position = "absolute"
-    this.element.style.left = "0em"
-    this.element.style.top = "0em"
 }
 
 SprigganMakeConstructable(SprigganGroup)
@@ -434,14 +449,13 @@ SprigganMakeElementWrapper(SprigganGroup)
 SprigganMakeParent(SprigganGroup)
 SprigganMakeChild(SprigganGroup)
 SprigganMakeClickable(SprigganGroup)
+SprigganMakeMovable(SprigganGroup)
 
 function SprigganSprite(parent, contentManager, spriteSheetUrl, clicked) {
     this.parent = parent
     this.clicked = clicked
     this.construct()
     this.element.style.position = "absolute"
-    this.element.style.left = "0em"
-    this.element.style.top = "0em"
     this.element.style.overflow = "hidden"
     this.spriteSheet = contentManager.get(SprigganSpriteSheet, spriteSheetUrl)
     this.spriteSheet.sprites.push(this)
@@ -461,6 +475,7 @@ SprigganMakePausable(SprigganSprite, function(){
 SprigganMakeElementWrapper(SprigganSprite)
 SprigganMakeChild(SprigganSprite)
 SprigganMakeClickable(SprigganSprite)
+SprigganMakeMovable(SprigganSprite)
 
 SprigganSprite.prototype.setFrame = function(frame) {
     this.imageElement.style.left = frame.imageLeft
