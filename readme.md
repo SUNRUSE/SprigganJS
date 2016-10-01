@@ -118,7 +118,9 @@ scaled to fit the user's display or browser window.
 
     var width = 320  // pixels
     var height = 240 // pixels
-    var viewport = new SprigganViewport(width, height)
+    var viewport = new SprigganViewport(width, height, function(){
+        // Called when the viewport is clicked.
+    })
     viewport.pause() // Pauses every group and/or sprite inside.
     viewport.resume() // Unpauses every group and/or sprite inside.
     viewport.dispose() // Deletes the viewport.
@@ -128,7 +130,9 @@ scaled to fit the user's display or browser window.
 Represents a group of SprigganSprites and/or SprigganGroups in a 
 SprigganViewport.  This allows them to be controlled as a single object.
 
-    var group = new SprigganGroup(viewportOrGroup)
+    var group = new SprigganGroup(viewportOrGroup, function(){
+        // Called when any sprite in the group is clicked.
+    })
     
     group.pause() // Pauses every group and/or sprite inside.
     group.resume() // Unpauses every group and/or sprite inside.
@@ -140,7 +144,9 @@ SprigganViewport.  This allows them to be controlled as a single object.
 Displays a frame of a SprigganSpriteSheet inside a SprigganViewport or 
 SprigganGroup.
     
-    var sprite = new SprigganSprite(viewportOrGroup, contentManager, urlToSpriteSheet)
+    var sprite = new SprigganSprite(viewportOrGroup, contentManager, urlToSpriteSheet, function(){
+        // Called when the sprite is clicked.
+    })
     
     sprite.play("animation name", function(){
         // Called when the animation has completed.

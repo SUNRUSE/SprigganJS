@@ -361,15 +361,33 @@ function SprigganMakePausable(type, onPausing, onResuming) {
     }
 }
 
+var SprigganEventWasTriggeredByUserInteraction = false
+
+function SprigganMakeClickable(type) {
+    type.prototype.onConstruction.push(function(){
+        var instance = this
+        if (!instance.clicked) return
+        instance.element.onclick = function() {
+            try {
+                SprigganEventWasTriggeredByUserInteraction = true
+                instance.clicked()
+            } finally {
+                SprigganEventWasTriggeredByUserInteraction = false
+            }
+        }
+    })
+}
+
 var SprigganAllViewports = []
 
 window.onresize = function() {
     for (var i = 0; i < SprigganAllViewports.length; i++) SprigganAllViewports[i].resize()
 }
 
-function SprigganViewport(width, height) {
+function SprigganViewport(width, height, clicked) {
     this.width = width
     this.height = height
+    this.clicked = clicked
     this.construct()
     this.element.style.position = "fixed"
     this.element.style.width = width + "em"
@@ -398,9 +416,11 @@ SprigganMakeDisposable(SprigganViewport, function() {
 SprigganMakePausable(SprigganViewport)
 SprigganMakeParent(SprigganViewport)
 SprigganMakeElementWrapper(SprigganViewport)
+SprigganMakeClickable(SprigganViewport)
 
-function SprigganGroup(parent) {
+function SprigganGroup(parent, clicked) {
     this.parent = parent
+    this.clicked = clicked
     this.construct()
     this.element.style.position = "absolute"
     this.element.style.left = "0em"
@@ -413,9 +433,11 @@ SprigganMakePausable(SprigganGroup)
 SprigganMakeElementWrapper(SprigganGroup)
 SprigganMakeParent(SprigganGroup)
 SprigganMakeChild(SprigganGroup)
+SprigganMakeClickable(SprigganGroup)
 
-function SprigganSprite(parent, contentManager, spriteSheetUrl) {
+function SprigganSprite(parent, contentManager, spriteSheetUrl, clicked) {
     this.parent = parent
+    this.clicked = clicked
     this.construct()
     this.element.style.position = "absolute"
     this.element.style.left = "0em"
@@ -438,6 +460,7 @@ SprigganMakePausable(SprigganSprite, function(){
 })
 SprigganMakeElementWrapper(SprigganSprite)
 SprigganMakeChild(SprigganSprite)
+SprigganMakeClickable(SprigganSprite)
 
 SprigganSprite.prototype.setFrame = function(frame) {
     this.imageElement.style.left = frame.imageLeft
