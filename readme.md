@@ -136,3 +136,79 @@ SprigganGroup.
     
     var sprite = new SprigganSprite(viewportOrGroup, contentManager, urlToSpriteSheet)
     sprite.dispose() // Deletes the sprite.
+    
+### SprigganTimer
+
+Implements a pausable timer.
+
+    /* This 900msec timer does not start until resumed. */
+
+    var timer = new SprigganTimer(0.9, {
+        paused: function() {
+            console.log("Paused; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+        },
+        resumed: function() {
+            console.log("Resumed; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+        },
+        completed: function() {
+            console.log("Completed; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+        }
+    })
+    
+    /* timer.elapsedMilliseconds() returns the number of milliseconds passed. */
+    /* timer.elapsedSeconds() returns the number of milliseconds passed. */
+    /* timer.progress() returns 0.0 at the start and 1.0 at the end. */
+    
+    console.log("Created; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+    
+    timer.resume()
+    
+    console.log("Started; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+    
+    setTimeout(function(){
+        console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+        timer.pause()
+        
+        /* After pausing, the timer stops updating until it is resumed. */
+        
+        console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+        setTimeout(function(){
+            
+            /* These values will not have changed as the timer is paused. */
+            console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+            
+            timer.resume()
+            
+            /* The timer is now running again. */
+            
+            console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+            setTimeout(function(){
+                
+                /* These values will have changed as the timer is running. */
+                
+                console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                setTimeout(function(){
+                    
+                    /* The timer will complete before this. */
+                    /* As such, the values logged will indicate the end of the timer. */
+                    
+                    console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                }, 400)
+            }, 400)
+        }, 400)
+    }, 400)
+    
+    /* Output varies, but should be approximately:
+        Created; 0msec (0)
+        Resumed; 0msec (0)
+        Started; 0msec (0)
+        Check; 431msec (0.47888888888888886)
+        Paused; 431msec (0.47888888888888886)
+        Check; 431msec (0.47888888888888886)
+        Check; 431msec (0.47888888888888886)
+        Resumed; 431msec (0.47888888888888886)
+        Check; 435msec (0.48333333333333334)
+        Check; 846msec (0.94)
+        Completed; 900msec (1)
+        Check; 900msec (1)
+    */

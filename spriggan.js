@@ -38,6 +38,53 @@ window.onload = function() {
     callback = SprigganBoot.call(contentManager, contentManager)
 }
 
+function SprigganTimer(seconds, configuration) {   
+    this.seconds = seconds
+    this.milliseconds = seconds * 1000
+    
+    this.configuration = configuration
+    this.started = null
+    this.elapsed = 0
+    this.done = false
+    this.timeout = null
+}
+
+SprigganTimer.prototype.pause = function() {
+    if (this.timeout) {
+        this.elapsed += new Date().getTime() - this.started
+        this.started = null
+        clearTimeout(this.timeout)
+        this.timeout = null
+        if (this.configuration.paused) this.configuration.paused.call(this, this)
+    }
+}
+
+SprigganTimer.prototype.resume = function() {
+    if (!this.timeout && !this.done) {
+        var timer = this
+        this.timeout = setTimeout(function(){
+            timer.done = true
+            timer.timeout = null
+            if (timer.configuration.completed) timer.configuration.completed.call(timer, timer)
+        }, this.milliseconds - this.elapsedMilliseconds())
+        this.started = new Date().getTime()
+        if (this.configuration.resumed) this.configuration.resumed.call(this, this)
+    }
+}
+
+SprigganTimer.prototype.elapsedMilliseconds = function() {
+    if (this.done) return this.milliseconds
+    return Math.min(this.milliseconds, this.elapsed + (this.timeout ? (new Date().getTime() - this.started) : 0))
+}
+
+SprigganTimer.prototype.elapsedSeconds = function() {
+    return this.elapsedMilliseconds() / 1000
+}
+
+SprigganTimer.prototype.progress = function() {
+    return this.seconds ? this.elapsedSeconds() / this.seconds : 1
+}
+
 var SprigganAllContentManagers = []
 
 function SprigganContentManager(configuration) {
