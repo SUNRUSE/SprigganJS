@@ -458,6 +458,14 @@ function SprigganMakeMovable(type) {
         }
         if (!instance.paused) timer.resume()
     }
+    
+    type.prototype.moveAtPixelsPerSecond = function(x, y, pixelsPerSecond, then) {
+        if (this.movement) this.movement.pause()
+        var fromX = this.x()
+        var fromY = this.y()
+        var distance = Math.sqrt((x - fromX) * (x - fromX) + (y - fromY) * (y - fromY))
+        this.moveOverSeconds(x, y, distance / pixelsPerSecond, then)
+    }
 }
 
 var SprigganAllViewports = []
