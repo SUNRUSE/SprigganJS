@@ -242,8 +242,8 @@ function SprigganSpriteSheet(url, onSuccess) {
             for (var i = 0; i < animation.length; i++) {
                 var frame = json.frames[animation[i]]
                 converted.push({
-                    imageLeft: -image[0] + "em",
-                    imageTop: -image[1] + "em",
+                    imageLeft: -frame[0] + "em",
+                    imageTop: -frame[1] + "em",
                     wrapperWidth: (1 + frame[2] - frame[0]) + "em",
                     wrapperHeight: (1 + frame[3] - frame[1]) + "em",
                     wrapperMarginLeft: (frame[0] - frame[4]) + "em",
@@ -382,3 +382,32 @@ SprigganMakeDisposable(SprigganSprite, function(){
 })
 SprigganMakeElementWrapper(SprigganSprite)
 SprigganMakeChild(SprigganSprite)
+
+SprigganSprite.prototype.play = function(animationName, then) {
+    var sprite = this
+    var frames
+    for (var key in sprite.spriteSheet.animations) {
+        if (key != animationName) continue
+        frames = sprite.spriteSheet.animations[key]
+        break
+    }
+    if(!frames) throw new Error("Animation \"" + animationName + "\" does not exist in this SprigganSpriteSheet")
+    var frame = 0
+    function NextFrame() {
+        if (frame == frames.length) {
+            if (then) then()
+            return
+        }
+        var currentFrame = frames[frame++]
+        sprite.imageElement.style.left = currentFrame.imageLeft
+        sprite.imageElement.style.top = currentFrame.imageTop
+        sprite.element.style.width = currentFrame.wrapperWidth
+        sprite.element.style.height = currentFrame.wrapperHeight
+        sprite.element.style.marginLeft = currentFrame.wrapperMarginLeft
+        sprite.element.style.marginTop = currentFrame.wrappedMarginTop
+        new SprigganTimer(currentFrame.duration, {
+            completed: NextFrame
+        }).resume()
+    }
+    NextFrame()
+}

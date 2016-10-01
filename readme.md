@@ -135,6 +135,12 @@ Displays a frame of a SprigganSpriteSheet inside a SprigganViewport or
 SprigganGroup.
     
     var sprite = new SprigganSprite(viewportOrGroup, contentManager, urlToSpriteSheet)
+    
+    sprite.play("animation name", function(){
+        // Called when the animation has completed.
+        // Not called if the animation is interrupted by another call to .play or .loop.
+    })
+    
     sprite.dispose() // Deletes the sprite.
     
 ### SprigganTimer
