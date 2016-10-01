@@ -397,7 +397,19 @@ function SprigganMakeMovable(type) {
         this.move(0, 0)
     })
     
+    type.prototype.onPausing.push(function(){
+        if (this.movement) this.movement.pause()
+    })
+    
+    type.prototype.onResuming.push(function(){
+        if (this.movement) this.movement.resume()
+    })
+    
     type.prototype.move = function(x, y) {
+        if (this.movement) {
+            this.movement.pause()
+            this.movement = null
+        }
         if ("transform" in this.element.style) {
              // IE10+, Edge, Firefox, Chrome.
             this.element.style.transform = "translate(" + x + "em, " + y + "em)"
@@ -406,6 +418,45 @@ function SprigganMakeMovable(type) {
             this.element.style.left = x  + "em"
             this.element.style.top = y  + "em"
         }
+        this.x = function() { return x }
+        this.y = function() { return y }
+    }
+    
+    type.prototype.moveOverSeconds = function(x, y, seconds, then) {
+        var instance = this
+        if (instance.movement) instance.movement.pause()
+        var fromX = instance.x()
+        var fromY = instance.y()
+        var timer
+        var currentX = instance.x = function() { return fromX + (x - fromX) * timer.progress() }
+        var currentY = instance.y = function() { return fromY + (y - fromY) * timer.progress() }
+        if ("transform" in this.element.style) {
+             // IE10+, Edge, Firefox, Chrome.
+            instance.element.offsetHeight // Forces a reflow; required for transitions to work.
+            timer = instance.movement = new SprigganTimer(seconds, {
+                completed: then,
+                paused: function() {
+                    instance.element.style.transition = "initial"
+                    instance.element.style.transform = "translate(" + currentX() + "em, " + currentY() + "em)"
+                }, 
+                resumed: function() {
+                    instance.element.style.transition = "transform " + (seconds - timer.elapsedSeconds()) + "s linear"
+                    instance.element.style.transform = "translate(" + x + "em, " + y + "em)"
+                }
+            })
+        } else {
+            // IE9-.
+            function UpdatePosition() {
+                instance.element.style.left = currentX() + "em"
+                instance.element.style.top = currentY() + "em"
+            }
+            timer = instance.movement = new SprigganTimer(seconds, {
+                completed: then,
+                paused: UpdatePosition,
+                progress: UpdatePosition
+            })
+        }
+        if (!instance.paused) timer.resume()
     }
 }
 

@@ -136,6 +136,12 @@ SprigganViewport.  This allows them to be controlled as a single object.
     
     group.move(20, 40) // Moves to 20 pixels from the left edge, 40 pixels from the top edge instantaneously.
     
+    // Moves to 80 pixels from the left edge, 70 pixels from the top edge over the course of 0.4 seconds.
+    group.moveOverSeconds(80, 70, 0.4, function() {
+        // Called when the movement has completed.
+        // Not called if the movement is interrupted by another call to .move, .moveOverSeconds, .moveAtPixelsPerSecond.
+    })
+    
     group.pause() // Pauses every group and/or sprite inside.
     group.resume() // Unpauses every group and/or sprite inside.
     
@@ -158,6 +164,12 @@ SprigganGroup.
     sprite.loop("animation name")
     
     sprite.move(20, 40) // Moves to 20 pixels from the left edge, 40 pixels from the top edge instantaneously.
+    
+    // Moves to 80 pixels from the left edge, 70 pixels from the top edge over the course of 0.4 seconds.
+    sprite.moveOverSeconds(80, 70, 0.4, function() {
+        // Called when the movement has completed.
+        // Not called if the movement is interrupted by another call to .move, .moveOverSeconds, .moveAtPixelsPerSecond.
+    })
     
     sprite.pause() // Pauses any animation/movement.
                    // Changes in animation/movement will be frozen until resumed.
