@@ -34,7 +34,6 @@ window.onload = function() {
 var SprigganAllContentManagers = []
 
 function SprigganContentManager(configuration) {
-    this.disposed = false
     this.completed = 0
     this.total = 0
     this.content = []
@@ -42,12 +41,13 @@ function SprigganContentManager(configuration) {
     SprigganAllContentManagers.push(this)
 }
 
-SprigganContentManager.prototype.dispose = function() {
-    if (this.disposed) throw new Error("This SprigganContentManager has already been disposed")
-    this.disposed = true
+SprigganMakeDisposable(SprigganContentManager, function(){
     SprigganAllContentManagers.splice(SprigganAllContentManagers.indexOf(this), 1)
-    while (this.content.length) this.content.pop().dispose()
-}
+    while(this.content.length) {
+        var content = this.content.pop()
+        if (content.loaded) content.dispose()
+    }
+})
 
 SprigganContentManager.prototype.find = function(url) {
     if (this.disposed) throw new Error("This SprigganContentManager has been disposed of")
@@ -79,9 +79,9 @@ SprigganContentManager.prototype.add = function(type, url) {
             type: type,
             dispose: type(url, function(value) { 
                 contentManager.completed++
+                content.loaded = true
                 if (contentManager.disposed) {
                     content.dispose()
-                    contentManager.content.splice(contentManager.content.indexOf(content), 1)
                 } else {
                     content.value = value
                     if (contentManager.configuration.progress) 
@@ -118,10 +118,143 @@ function SprigganJson(url, onSuccess) {
         } catch(e) {
             throw new Error("Failed to parse \"" + url + "\" as JSON")
         }
-        onSuccess()
     })
 }
 
+function SprigganImage(url, onSuccess) {
+    var image = new Image()
+    image.onload = function() {
+        onSuccess(image)
+    }
+    image.onerror = function() {
+        throw new Error("Failed to load \"" + url + "\" as a PNG image")
+    }
+    image.src = url
+    return function() {}
+}
+
+function SprigganSpriteSheet(url, onSuccess) {
+    var json, image
+    
+    var disposeJson = new SprigganJson(url + ".json", function(value){
+        json = value
+        CheckFullyLoaded()
+    })
+    
+    var disposeImage = new SprigganImage(url + ".png", function(value){
+        image = value
+        CheckFullyLoaded()
+    })
+    
+    var sprites = []
+    
+    function CheckFullyLoaded() {
+        if (!json) return
+        if (!image) return
+        
+        var value = {
+            animations: {},
+            image: image.cloneNode(true),
+            sprites: sprites
+        }
+        
+        value.image.style.touchAction = "manipulation" // Improves responsiveness on IE/Edge on touchscreens.
+        
+        if ("imageRendering" in value.image.style) {
+            value.image.style.imageRendering = "pixelated" // Chrome.
+            value.image.style.imageRendering = "-moz-crisp-edges" // Firefox.
+        } else if ("msInterpolationMode" in value.image.style) {
+            value.image.style.msInterpolationMode = "nearest-neighbor" // IE.
+        } else {
+            // Workaround for Edge as it always uses linear interpolation; scale up 4x in a canvas to ensure that the pixels stay mostly square.
+            var canvas = document.createElement("CANVAS")
+            canvas.width = image.width * 4
+            canvas.height = image.height * 4
+            var context = canvas.getContext("2d")
+            context.msImageSmoothingEnabled = false
+            context.drawImage(image, 0, 0, image.width * 4, image.height * 4)
+            value.image.src = canvas.toDataURL("image/png")
+        }
+        
+        value.image.style.position = "absolute"
+        value.image.style.width = image.width + "em"
+        value.image.style.height = image.height + "em"
+        
+        for (var key in json.animations) {
+            var animation = json.animations[key]
+            var converted = []
+            for (var i = 0; i < animation.length; i++) {
+                var frame = json.frames[animation[i]]
+                converted.push({
+                    imageLeft: -image[0] + "em",
+                    imageTop: -image[1] + "em",
+                    wrapperWidth: (1 + frame[2] - frame[0]) + "em",
+                    wrapperHeight: (1 + frame[3] - frame[1]) + "em",
+                    wrapperMarginLeft: (frame[0] - frame[4]) + "em",
+                    wrapperMarginTop: (frame[1] - frame[5]) + "em",
+                    duration: frame[6]
+                })
+            }
+            value.animations[key] = converted
+        }
+        
+        onSuccess(value)
+    }
+    
+    return function() {
+        disposeJson()
+        disposeImage()
+        while (sprites.length) sprites[0].dispose()
+    }
+}
+
+function SprigganMakeConstructable(type, onConstruction) {
+    type.prototype.construct = function() {
+        for (var i = 0; i < this.onConstruction.length; i++) this.onConstruction[i].call(this, this)
+    }
+    type.prototype.onConstruction = []
+    if (onConstruction) type.onConstruction.push(onConstruction)
+}
+
+function SprigganMakeDisposable(type, onDisposal) {
+    type.prototype.disposed = false
+    
+    type.prototype.onDisposal = []
+    if (onDisposal) type.prototype.onDisposal.push(onDisposal)
+    
+    type.prototype.dispose = function() {
+        if (this.disposed) return
+        this.disposed = true
+        for (var i = 0; i < this.onDisposal.length; i++) this.onDisposal[i].call(this, this)
+    }
+}
+
+function SprigganMakeElementWrapper(type) {
+    type.prototype.onConstruction.push(function(){
+        this.element = document.createElement("DIV")
+    })
+    type.prototype.onDisposal.push(function(){
+        this.element.parentNode.removeChild(this.element)
+    })
+}
+
+function SprigganMakeChild(type) {
+    type.prototype.onConstruction.push(function(){
+        this.parent.element.appendChild(this.element)
+    })
+    type.prototype.onDisposal.push(function(){
+        this.parent.children.splice(this.parent.children.indexOf(this), 1)
+    })
+}
+
+function SprigganMakeParent(type) {
+    type.prototype.onConstruction.push(function(){
+        this.children = []
+    })
+    type.prototype.onDisposal.push(function(){
+        while (this.children.length) this.children[0].dispose()
+    })
+}
 
 var SprigganAllViewports = []
 
@@ -132,17 +265,14 @@ window.onresize = function() {
 function SprigganViewport(width, height) {
     this.width = width
     this.height = height
-    
-    this.element = document.createElement("DIV")
+    this.construct()
     this.element.style.position = "fixed"
     this.element.style.width = width + "em"
     this.element.style.height = height + "em"
     this.element.style.overflow = "hidden"
-
     document.body.appendChild(this.element)
     
     this.resize()
-    
     SprigganAllViewports.push(this)
 }
 
@@ -155,3 +285,44 @@ SprigganViewport.prototype.resize = function() {
     this.element.style.left = ((windowWidth - this.element.clientWidth) / 2) + "px"
     this.element.style.top = ((windowHeight - this.element.clientHeight) / 2) + "px"
 }
+
+SprigganMakeConstructable(SprigganViewport)
+SprigganMakeDisposable(SprigganViewport, function() {
+    SprigganAllViewports.splice(SprigganAllViewports.indexOf(this), 1)
+})
+SprigganMakeParent(SprigganViewport)
+SprigganMakeElementWrapper(SprigganViewport)
+
+function SprigganGroup(parent) {
+    this.parent = parent
+    this.construct()
+    this.element.style.position = "absolute"
+    this.element.style.left = "0em"
+    this.element.style.top = "0em"
+}
+
+SprigganMakeConstructable(SprigganGroup)
+SprigganMakeDisposable(SprigganGroup)
+SprigganMakeElementWrapper(SprigganGroup)
+SprigganMakeParent(SprigganGroup)
+SprigganMakeChild(SprigganGroup)
+
+function SprigganSprite(parent, contentManager, spriteSheetUrl) {
+    this.parent = parent
+    this.construct()
+    this.element.style.position = "absolute"
+    this.element.style.left = "0em"
+    this.element.style.top = "0em"
+    this.element.style.overflow = "hidden"
+    this.spriteSheet = contentManager.get(SprigganSpriteSheet, spriteSheetUrl)
+    this.spriteSheet.sprites.push(this)
+    this.imageElement = this.spriteSheet.image.cloneNode(true)
+    this.element.appendChild(this.imageElement)
+}
+
+SprigganMakeConstructable(SprigganSprite)
+SprigganMakeDisposable(SprigganSprite, function(){
+    this.spriteSheet.sprites.splice(this.spriteSheet.sprites.indexOf(this), 1)
+})
+SprigganMakeElementWrapper(SprigganSprite)
+SprigganMakeChild(SprigganSprite)

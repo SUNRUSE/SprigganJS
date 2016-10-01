@@ -99,6 +99,17 @@ Reads the text from a file as a JSON object.
             alert(contentManager.get(SprigganJson, "path/to/json/file")["and"])
         }
     }
+    
+### SprigganSpriteSheet
+
+Combines a PNG image and JSON file describing the sprite frames within it.  The
+".png" and ".json" extensions are added automatically.
+
+This is to be given directly to SprigganSprite, and contents may vary by
+platform.
+
+    // Loads both "path/to/sprite/sheet.png" and "path/to/sprite/sheet.json"
+    contentManager.get(SprigganSpritesheet, "path/to/sprite/sheet")
 
 ### SprigganViewport
 
@@ -107,4 +118,21 @@ scaled to fit the user's display or browser window.
 
     var width = 320  // pixels
     var height = 240 // pixels
-    new SprigganViewport(width, height)
+    var viewport = new SprigganViewport(width, height)
+    viewport.dispose() // Deletes the viewport.
+    
+### SprigganGroup
+
+Represents a group of SprigganSprites and/or SprigganGroups in a 
+SprigganViewport.  This allows them to be controlled as a single object.
+
+    var group = new SprigganGroup(viewportOrGroup)
+    group.dispose() // Deletes the group.
+    
+### SprigganSprite
+
+Displays a frame of a SprigganSpriteSheet inside a SprigganViewport or 
+SprigganGroup.
+    
+    var sprite = new SprigganSprite(viewportOrGroup, contentManager, urlToSpriteSheet)
+    sprite.dispose() // Deletes the sprite.
