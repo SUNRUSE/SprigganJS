@@ -411,7 +411,8 @@ function SprigganMakeMovable(type) {
             this.movement = null
         }
         if ("transform" in this.element.style) {
-             // IE10+, Edge, Firefox, Chrome.
+            // IE10+, Edge, Firefox, Chrome.
+            this.element.style.transition = "initial"
             this.element.style.transform = "translate(" + x + "em, " + y + "em)"
         } else {
             // IE9-.
