@@ -556,7 +556,7 @@ SprigganSprite.prototype.setFrame = function(frame) {
     this.element.style.width = frame.wrapperWidth
     this.element.style.height = frame.wrapperHeight
     this.element.style.marginLeft = frame.wrapperMarginLeft
-    this.element.style.marginTop = frame.wrappedMarginTop
+    this.element.style.marginTop = frame.wrapperMarginTop
 }
 
 SprigganSprite.prototype.play = function(animationName, then) {
