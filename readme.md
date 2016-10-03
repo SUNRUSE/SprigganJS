@@ -110,6 +110,79 @@ platform.
 
     // Loads both "path/to/sprite/sheet.png" and "path/to/sprite/sheet.json"
     contentManager.get(SprigganSpritesheet, "path/to/sprite/sheet")
+    
+#### JSON File Format
+
+    {
+        "frames": [
+            [10, 30, 20, 50, 15, 25, 0.886],
+            [40, 30, 70, 50, 45, 25, 0.656],
+            [80, 30, 110, 50, 85, 25, 0.182]
+        ],
+        "animations": {
+            "animationA": [0, 2, 1, 1, 2],
+            "animationB": [2, 0, 2, 1]
+        }
+    }
+    
+This file:
+
+- Defines sprite 0 as covering all pixels from 10-20 on the X axis and 30-50 on the Y axis.
+  It should be centred on 15 on the X axis and 25 on the Y axis.
+  It should be displayed for 0.886 seconds in animations.
+- Defines sprite 1 as covering all pixels from 40-70 on the X axis and 30-50 on the Y axis.
+  It should be centred on 45 on the X axis and 25 on the Y axis.
+  It should be displayed for 0.656 seconds in animations.
+- Defines sprite 2 as covering all pixels from 80-100 on the X axis and 30-50 on the Y axis.
+  It should be centred on 85 on the X axis and 25 on the Y axis.
+  It should be displayed for 0.182 seconds in animations.
+- Defines animation "animationA" as frames 0, 2, 1, 1 and 2.
+- Defines animation "animationB" as frames 2, 0, 2 and 1.
+
+The X axis runs from left to right.
+The Y axis runs from top to bottom.
+All ranges are inclusive; 3-8 includes 3, 4, 5, 6, 7 and 8.
+
+#### Exporting from Aseprite
+
+A Grunt task is included in the "tasks" directory which automatically converts
+Aseprite files into PNG/JSON pairs for use in-engine.
+
+The aseprite executable should be accessible via the command line; ensure that
+"aseprite -?" displays details on how to use aseprite's command line interface.
+
+I would recommend adding Aseprite to the PATH environment variable, or adding
+a symbolic link or shortcut to where it is installed.
+
+##### Configuration example
+
+    module.exports = function(grunt) {
+        grunt.loadNpmTasks("sprigganjs")
+        grunt.initConfig({
+            "sprigganjs-aseprite": {
+                a: {
+                    files: [{
+                        expand: true,
+                        src: "**/*.ase",
+                        dest: "dist",
+                        cwd: "assets"
+                    }]
+                }
+            }
+        })
+        grunt.registerTask("default", ["sprigganjs-aseprite"])
+    }
+    
+This takes every .ase file in the "assets" directory and its subdirectories, and
+creates .png/.json files in the "dist" directory:
+
+Given "assets/subdirectoryA/subdirectoryB/test.ase", creates
+- "dist/subdirectoryA/subdirectoryB/test.png"
+- "dist/subdirectoryA/subdirectoryB/test.json"
+
+Every "tag" in the timeline is exported as an animation using the tag's name.
+
+The centre pixel (or pixel to the lower right) is the "origin" of the sprite.
 
 ### SprigganViewport
 

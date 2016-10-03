@@ -1,0 +1,30 @@
+{
+  "name": "sprigganjs",
+  "version": "0.0.5",
+  "description": "A \"vanilla\" JavaScript library for creating simple, event-driven pixel art games in your browser.",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunruse/sprigganjs.git"
+  },
+  "author": {
+    "name": "SUNRUSE",
+    "email": "open.source@sunruse.co.uk",
+    "url": "https://sunruse.co.uk"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sunruse/sprigganjs/issues",
+    "email": "open.source@sunruse.co.uk"
+  },
+  "homepage": "https://github.com/sunruse/sprigganjs#readme",
+  "dependencies": {
+    "mkdirp": "^0.5.1"
+  }
+}
