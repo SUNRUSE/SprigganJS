@@ -157,6 +157,8 @@ SprigganViewport.  This allows them to be controlled as a single object.
 
 Displays a frame of a SprigganSpriteSheet inside a SprigganViewport or 
 SprigganGroup.
+
+You can find an example of this in examples/SprigganSprite.
     
     var sprite = new SprigganSprite(viewportOrGroup, contentManager, urlToSpriteSheet, function(){
         // Called when the sprite is clicked.

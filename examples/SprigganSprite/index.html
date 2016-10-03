@@ -1,0 +1,73 @@
+<html>
+    <body>
+        <div id="loading">Now loading... (please ensure that JavaScript is enabled)</div>
+        <script src="../../spriggan.js"></script>
+        <script>
+            function SprigganBoot(contentManager) {
+                contentManager.add(SprigganSpriteSheet, "atlas")
+                return function() {
+                    var viewport = new SprigganViewport(127, 71)
+                    var background = new SprigganSprite(viewport, contentManager, "atlas")
+                    background.loop("background")
+                    var target = new SprigganSprite(viewport, contentManager, "atlas")
+                    target.loop("target")
+                    target.move(63, 30)
+                    var object = new SprigganSprite(viewport, contentManager, "atlas")
+                    object.loop("objectIdle")
+                    object.move(63, 30)
+                    var playPause = new SprigganSprite(viewport, contentManager, "atlas", function() {
+                        if (viewport.paused) {
+                            viewport.resume()
+                            playPause.loop("pause")
+                        } else {
+                            viewport.pause()
+                            playPause.loop("play")
+                        }
+                    })
+                    playPause.loop("pause")
+                    var moveImmediately = new SprigganSprite(viewport, contentManager, "atlas", function(){
+                        function CreateTeleportEffect(x, y) {
+                            var sprite = new SprigganSprite(viewport, contentManager, "atlas")
+                            sprite.move(x, y)
+                            sprite.play("teleport", function(){
+                                sprite.dispose()
+                            })
+                        }
+                        CreateTeleportEffect(object.x(), object.y())
+                        var x = Math.round(Math.random() * 80 + 25)
+                        var y = Math.round(Math.random() * 30 + 10)
+                        target.move(x, y)
+                        object.move(x, y)
+                        object.loop("objectIdle")
+                        CreateTeleportEffect(x, y)
+                    })
+                    moveImmediately.loop("moveImmediately")
+                    var moveOverSeconds = new SprigganSprite(viewport, contentManager, "atlas", function() {
+                        var x = Math.round(Math.random() * 80 + 25)
+                        var y = Math.round(Math.random() * 30 + 10)
+                        object.loop("objectMoving")
+                        target.move(x, y)
+                        object.moveOverSeconds(x, y, 0.8, function() {
+                            object.play("objectStopped", function() {
+                                object.loop("objectIdle")
+                            })
+                        })
+                    })
+                    moveOverSeconds.loop("moveOverSeconds")
+                    var moveAtPixelsPerSecond = new SprigganSprite(viewport, contentManager, "atlas", function() {
+                        var x = Math.round(Math.random() * 80 + 25)
+                        var y = Math.round(Math.random() * 30 + 10)
+                        object.loop("objectMoving")
+                        target.move(x, y)
+                        object.moveAtPixelsPerSecond(x, y, 10, function() {
+                            object.play("objectStopped", function() {
+                                object.loop("objectIdle")
+                            })
+                        })
+                    })
+                    moveAtPixelsPerSecond.loop("moveAtPixelsPerSecond")
+                }
+            }
+        </script>
+    </body>
+</html>
