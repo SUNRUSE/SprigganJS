@@ -1,0 +1,33 @@
+<html>
+    <body>
+        <div id="loading">Now loading... (please ensure that JavaScript is enabled)</div>
+        <script src="../../spriggan.js"></script>
+        <script>
+            function SprigganBoot(contentManager) {
+                contentManager.add(SprigganSpriteSheet, "controls")
+                return function() {
+                    var viewport = new SprigganViewport(64, 48)
+                    var splash = new SprigganSprite(viewport, contentManager, "controls", function() {
+                        splash.dispose()
+                        var audioManager = new SprigganContentManager({ loaded: Loaded })
+                        audioManager.add(SprigganSound, "clap.mp3")
+                        audioManager.add(SprigganSound, "synth.mp3")
+                        
+                        function Loaded() {
+                            var clap = new SprigganSprite(viewport, contentManager, "controls", function() {
+                                audioManager.get(SprigganSound, "clap.mp3")()
+                            })
+                            clap.loop("clap")
+                            
+                            var synth = new SprigganSprite(viewport, contentManager, "controls", function() {
+                                audioManager.get(SprigganSound, "synth.mp3")()
+                            })
+                            synth.loop("synth")
+                        }
+                    })
+                    splash.loop("splash")
+                }
+            }
+        </script>
+    </body>
+</html>

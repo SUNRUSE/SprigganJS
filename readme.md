@@ -184,6 +184,13 @@ Every "tag" in the timeline is exported as an animation using the tag's name.
 
 The centre pixel (or pixel to the lower right) is the "origin" of the sprite.
 
+### SprigganSound
+
+Allows fire-and-forget play of MP3 audio.
+On many platforms, it is only possible to load audio in direct response to a
+user-generated touch, click or tap event.
+An example can be found in "examples/SprigganSound".
+
 ### SprigganViewport
 
 Represents a virtual display.  Created with a fixed resolution which is then

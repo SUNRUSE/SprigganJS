@@ -284,6 +284,44 @@ function SprigganSpriteSheet(url, onSuccess) {
     }
 }
 
+function SprigganSound(url, onSuccess) {
+    var disposed = false
+    if (!SprigganEventWasTriggeredByUserInteraction) throw new Error("Some platforms only support loading audio from a click/touch event")
+    if (!window.Audio) {
+        // Older versions of IE have no support for HTML audio.
+        // This effectively dummies out HTML audio.
+        setTimeout(function(){
+            onSuccess(function() {})
+        }, 0)
+    } else {
+        var audio = new Audio()
+        
+        audio.onloadeddata = function() {
+            audio.onloadeddata = null
+            audio.onerror = null
+            onSuccess(function(){
+                if (disposed) throw new Error("This SprigganSound has been disposed of")
+                audio.currentTime = 0
+                audio.play()
+            })
+        }
+        
+        audio.onerror = function() {
+            audio.onloadeddata = null
+            audio.onerror = null
+            throw new Error("Failed to download \"" + url + "\" as a sound")
+        }
+        
+        audio.src = url
+        audio.load()
+    }
+    
+    return function() { 
+        disposed = true
+        audio.pause()
+    }
+}
+
 function SprigganMakeConstructable(type, onConstruction) {
     type.prototype.construct = function() {
         for (var i = 0; i < this.onConstruction.length; i++) this.onConstruction[i].call(this, this)
