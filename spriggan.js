@@ -551,7 +551,11 @@ function SprigganMakeMovable(type) {
                 instance.element.style.top = currentY() + "em"
             }
             timer = instance.movement = new SprigganTimer(seconds, {
-                completed: then,
+                completed: function() {
+                    instance.element.style.left = x + "em"
+                    instance.element.style.top = y + "em"
+                    if (then) then()
+                },
                 paused: UpdatePosition,
                 progress: UpdatePosition
             })
