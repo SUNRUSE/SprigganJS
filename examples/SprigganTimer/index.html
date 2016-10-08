@@ -4,20 +4,26 @@
         <script src="../../spriggan.js"></script>
         <script>
             function SprigganBoot(contentManager) {
+                var loading = document.getElementById("loading")
+                loading.style.whiteSpace = "pre"
+                function Log(text) {
+                    loading.innerText += "\n" + text
+                }
+                
                 /* This 900msec timer does not start until resumed. */
             
                 var timer = new SprigganTimer(0.9, {
                     paused: function() {
-                        console.log("Paused; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                        Log("Paused; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                     },
                     resumed: function() {
-                        console.log("Resumed; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                        Log("Resumed; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                     },
                     completed: function() {
-                        console.log("Completed; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                        Log("Completed; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                     },
                     progress: function() {
-                        console.log("Progress update; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                        Log("Progress update; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                     }
                 })
                 
@@ -25,40 +31,40 @@
                 /* timer.elapsedSeconds() returns the number of milliseconds passed. */
                 /* timer.progress() returns 0.0 at the start and 1.0 at the end. */
                 
-                console.log("Created; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                Log("Created; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                 
                 timer.resume()
                 
-                console.log("Started; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                Log("Started; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                 
                 setTimeout(function(){
-                    console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                    Log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                     timer.pause()
                     
                     /* After pausing, the timer stops updating until it is resumed. */
                     
-                    console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                    Log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                     setTimeout(function(){
                         
                         /* These values will not have changed as the timer is paused. */
-                        console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                        Log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                         
                         timer.resume()
                         
                         /* The timer is now running again. */
                         
-                        console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                        Log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                         setTimeout(function(){
                             
                             /* These values will have changed as the timer is running. */
                             
-                            console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                            Log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                             setTimeout(function(){
                                 
                                 /* The timer will complete before this. */
                                 /* As such, the values logged will indicate the end of the timer. */
                                 
-                                console.log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
+                                Log("Check; " + timer.elapsedMilliseconds() + "msec " + timer.elapsedSeconds() + "sec (" + timer.progress() + ")")
                             }, 400)
                         }, 400)
                     }, 400)
