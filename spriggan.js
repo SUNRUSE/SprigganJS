@@ -292,7 +292,7 @@ function SprigganSound(url, onSuccess) {
         // Older versions of IE have no support for HTML audio.
         // This effectively dummies out HTML audio.
         setTimeout(function(){
-            onSuccess(function() {})
+            onSuccess(function() { if (disposed) throw new Error("This SprigganSound has been disposed of") })
         }, 0)
     } else {
         audio = new Audio()
