@@ -330,6 +330,40 @@ An example can be found in "examples/SprigganEventOnce"
         Third listener: 77, 85
     */
     
+### SprigganEventRecurring
+
+An event which can be raised repeatedly.
+Listeners are only called for raise() calls after their listen() calls.
+
+An example can be found in "examples/SprigganEventRecurring"
+    
+    var ev = new SprigganEventRecurring()
+    
+    ev.listen(function(a, b){
+        Log("First listener: " + a + ", " + b)
+    })
+    ev.listenOnce(function(a, b){
+        Log("Second listener: " + a + ", " + b)
+    })
+    
+    ev.raise(77, 85) // This calls the above listeners.
+    ev.raise(185, 200) // This calls them again with different arguments.
+    
+    // Listeners added after raising the event are automatically called.
+    ev.listen(function(a, b){
+        Log("Third listener: " + a + ", " + b)
+    })
+
+    ev.raise(40, 20) // This calls them again with different arguments.
+    
+    /*  Output
+        First listener: 77, 85
+        Second listener: 77, 85
+        First listener: 185, 200
+        First listener: 40, 20
+        Third listener: 40, 20
+    */
+    
 ### SprigganTimer
 
 Implements a pausable timer.

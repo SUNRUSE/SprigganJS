@@ -56,6 +56,27 @@ SprigganEventOnce.prototype.listen = function(callback) {
         this.callbacks.push(callback)
 }
 
+function SprigganEventRecurring() {
+    this.callbacks = []
+    this.oneTimeCallbacks = []
+}
+
+SprigganEventRecurring.prototype.raise = function() {
+    var copy = arguments
+    var oneTimeCallbacksCopy = this.oneTimeCallbacks
+    this.oneTimeCallbacks = []
+    for (var i = 0; i < this.callbacks.length; i++) this.callbacks[i].apply(null, copy)
+    for (var i = 0; i < oneTimeCallbacksCopy.length; i++) oneTimeCallbacksCopy[i].apply(null, copy)
+}
+
+SprigganEventRecurring.prototype.listen = function(callback) {
+    this.callbacks.push(callback)
+}
+
+SprigganEventRecurring.prototype.listenOnce = function(callback) {
+    this.oneTimeCallbacks.push(callback)
+}
+
 function SprigganTimer(seconds, configuration) {   
     this.seconds = seconds
     this.milliseconds = seconds * 1000

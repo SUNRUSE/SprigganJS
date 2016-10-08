@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    </head>
+    <body>
+        <div id="loading">Now loading... (please ensure that JavaScript is enabled)</div>
+        <script src="../../spriggan.js"></script>
+        <script>
+            function SprigganBoot(contentManager) {
+                var loading = document.getElementById("loading")
+                loading.style.whiteSpace = "pre"
+                function Log(text) {
+                    loading.innerText += "\n" + text
+                }
+                
+                var ev = new SprigganEventRecurring()
+                
+                ev.listen(function(a, b){
+                    Log("First listener: " + a + ", " + b)
+                })
+                ev.listenOnce(function(a, b){
+                    Log("Second listener: " + a + ", " + b)
+                })
+                
+                ev.raise(77, 85) // This calls the above listeners.
+                ev.raise(185, 200) // This calls them again with different arguments.
+                
+                // Listeners added after raising the event are automatically called.
+                ev.listen(function(a, b){
+                    Log("Third listener: " + a + ", " + b)
+                })
+            
+                ev.raise(40, 20) // This calls them again with different arguments.
+                
+                /*  Output
+                    First listener: 77, 85
+                    Second listener: 77, 85
+                    First listener: 185, 200
+                    First listener: 40, 20
+                    Third listener: 40, 20
+                */
+                
+                return function() {}
+            }
+        </script>
+    </body>
+</html>
