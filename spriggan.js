@@ -15,7 +15,7 @@ function SprigganRemoveByValue(array, value) {
 function SprigganSetLoadingText(text) {
     var element = document.getElementById("loading")
     if (!element) return
-    element.textContent = text
+    element.innerText = text
 }
 
 SprigganSetLoadingText("Now loading scripts...")
