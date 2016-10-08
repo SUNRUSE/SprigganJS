@@ -165,7 +165,8 @@ a symbolic link or shortcut to where it is installed.
                         expand: true,
                         src: "**/*.ase",
                         dest: "dist",
-                        cwd: "assets"
+                        cwd: "assets",
+                        ext: ""
                     }]
                 }
             }
