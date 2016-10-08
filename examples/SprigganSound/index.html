@@ -12,6 +12,7 @@
                         var audioManager = new SprigganContentManager({ loaded: Loaded })
                         audioManager.add(SprigganSound, "clap.mp3")
                         audioManager.add(SprigganSound, "synth.mp3")
+                        audioManager.add(SprigganMusic, "music.mp3")
                         
                         function Loaded() {
                             var clap = new SprigganSprite(viewport, contentManager, "controls", function() {
@@ -23,6 +24,41 @@
                                 audioManager.get(SprigganSound, "synth.mp3")()
                             })
                             synth.loop("synth")
+                            
+                            var playing = false
+                            
+                            var playStopMusic = new SprigganSprite(viewport, contentManager, "controls", function() {
+                                if (playing) {
+                                    audioManager.get(SprigganMusic, "music.mp3").stop()
+                                    playStopMusic.loop("playMusic")
+                                    pauseResumeMusic.loop("resumeMusic")
+                                } else {
+                                    audioManager.get(SprigganMusic, "music.mp3").play()
+                                    playStopMusic.loop("stopMusic")
+                                    pauseResumeMusic.loop("pauseMusic")
+                                }
+                                playing = !playing
+                            })
+                            playStopMusic.loop("playMusic")
+                            
+                            var pauseResumeMusic = new SprigganSprite(viewport, contentManager, "controls", function() {
+                                if (playing) {
+                                    audioManager.get(SprigganMusic, "music.mp3").pause()
+                                    playStopMusic.loop("playMusic")
+                                    pauseResumeMusic.loop("resumeMusic")
+                                } else {
+                                    audioManager.get(SprigganMusic, "music.mp3").resume()
+                                    playStopMusic.loop("stopMusic")
+                                    pauseResumeMusic.loop("pauseMusic")
+                                }
+                                playing = !playing
+                            })
+                            pauseResumeMusic.loop("resumeMusic")
+                            
+                            var dispose = new SprigganSprite(viewport, contentManager, "controls", function() {
+                                audioManager.dispose()
+                            })
+                            dispose.loop("dispose")
                         }
                     })
                     splash.loop("splash")

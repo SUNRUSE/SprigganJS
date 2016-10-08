@@ -287,6 +287,7 @@ function SprigganSpriteSheet(url, onSuccess) {
 function SprigganSound(url, onSuccess) {
     var disposed = false
     if (!SprigganEventWasTriggeredByUserInteraction) throw new Error("Some platforms only support loading audio from a click/touch event")
+    var audio
     if (!window.Audio) {
         // Older versions of IE have no support for HTML audio.
         // This effectively dummies out HTML audio.
@@ -294,7 +295,7 @@ function SprigganSound(url, onSuccess) {
             onSuccess(function() {})
         }, 0)
     } else {
-        var audio = new Audio()
+        audio = new Audio()
         
         audio.onloadeddata = function() {
             audio.onloadeddata = null
@@ -318,7 +319,67 @@ function SprigganSound(url, onSuccess) {
     
     return function() { 
         disposed = true
-        audio.pause()
+        if (audio) audio.pause()
+    }
+}
+
+function SprigganMusic(url, onSuccess) {
+    var disposed = false
+    if (!SprigganEventWasTriggeredByUserInteraction) throw new Error("Some platforms only support loading audio from a click/touch event")
+    var audio
+    if (!window.Audio) {
+        // Older versions of IE have no support for HTML audio.
+        // This effectively dummies out HTML audio.
+        setTimeout(function(){
+            onSuccess({
+                play: function() { if (disposed) throw new Error("This SprigganMusic has been disposed of") },
+                resume: function() { if (disposed) throw new Error("This SprigganMusic has been disposed of") },
+                pause: function() { if (disposed) throw new Error("This SprigganMusic has been disposed of") },
+                stop: function() { if (disposed) throw new Error("This SprigganMusic has been disposed of") }
+            })
+        }, 0)
+    } else {
+        audio = new Audio()
+        
+        audio.onloadeddata = function() {
+            audio.onloadeddata = null
+            audio.onerror = null
+            onSuccess({
+                play: function() {
+                    if (disposed) throw new Error("This SprigganMusic has been disposed of")
+                    audio.currentTime = 0
+                    audio.play()
+                }, 
+                resume: function() {
+                    if (disposed) throw new Error("This SprigganMusic has been disposed of")
+                    audio.play()
+                }, 
+                pause: function() {
+                    if (disposed) throw new Error("This SprigganMusic has been disposed of")
+                    audio.pause()
+                }, 
+                stop: function() {
+                    if (disposed) throw new Error("This SprigganMusic has been disposed of")
+                    audio.pause()
+                    audio.currentTime = 0
+                }
+            })
+        }
+        
+        audio.onerror = function() {
+            audio.onloadeddata = null
+            audio.onerror = null
+            throw new Error("Failed to download \"" + url + "\" as a sound")
+        }
+        
+        audio.src = url
+        audio.loop = true
+        audio.load()
+    }
+    
+    return function() { 
+        disposed = true
+        if (audio) audio.pause()
     }
 }
 

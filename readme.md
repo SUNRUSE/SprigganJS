@@ -191,6 +191,33 @@ On many platforms, it is only possible to load audio in direct response to a
 user-generated touch, click or tap event.
 An example can be found in "examples/SprigganSound".
 
+    contentManager.add(SprigganSound, "path/to/mp3")
+    
+    ...
+    
+    var sound = contentManager.get(SprigganSound, "path/to/mp3")
+    sound() // Plays once.
+
+### SprigganMusic
+
+Allows looping playback of MP3 audio.
+On many platforms, it is only possible to load audio in direct response to a
+user-generated touch, click or tap event.
+Additionally, looping may be "imperfect"; a small skip or gap may be present at 
+the loop point depending upon your browser and/or MP3.
+An example can be found in "examples/SprigganSound".
+
+    contentManager.add(SprigganMusic, "path/to/mp3")
+    
+    ...
+    
+    var music = contentManager.get(SprigganMusic, "path/to/mp3") 
+    music.play()   // Starts the music from the beginning.
+                   // Restarts it if already playing.
+    music.stop()   // Stops the music and rewinds to the beginning.
+    music.pause()  // Pauses the music without rewinding.
+    music.resume() // Resumes the music from where it was paused.
+
 ### SprigganViewport
 
 Represents a virtual display.  Created with a fixed resolution which is then
