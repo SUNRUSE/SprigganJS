@@ -38,6 +38,24 @@ window.onload = function() {
     callback = SprigganBoot.call(contentManager, contentManager)
 }
 
+function SprigganEventOnce() {
+    this.callbacks = []
+    this.raised = null
+}
+
+SprigganEventOnce.prototype.raise = function() {
+    if (this.raised !== null) return
+    this.raised = arguments
+    while (this.callbacks.length) this.callbacks.pop().apply(null, this.raised)
+}
+
+SprigganEventOnce.prototype.listen = function(callback) {
+    if (this.raised !== null)
+        callback.apply(null, this.raised)
+    else
+        this.callbacks.push(callback)
+}
+
 function SprigganTimer(seconds, configuration) {   
     this.seconds = seconds
     this.milliseconds = seconds * 1000

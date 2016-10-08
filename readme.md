@@ -299,6 +299,37 @@ You can find an example of this in examples/SprigganSprite.
     
     sprite.dispose() // Deletes the sprite.
     
+### SprigganEventOnce
+
+An event which can only be raised one time.
+Listeners added following raise() are automatically called.
+
+An example can be found in "examples/SprigganEventOnce"
+
+    var ev = new SprigganEventOnce()
+    
+    ev.listen(function(a, b){
+        console.log("First listener: " + a + ", " + b)
+    })
+    ev.listen(function(a, b){
+        console.log("Second listener: " + a + ", " + b)
+    })
+    
+    ev.raise(77, 85) // This calls the above listeners.
+    ev.raise(77, 85) // This does nothing as the event has already been raised.
+    ev.raise(185, 200) // This also does nothing.
+    
+    // Listeners added after raising the event are automatically called.
+    ev.listen(function(a, b){
+        console.log("Third listener: " + a + ", " + b)
+    })
+    
+    /*  Output
+        First listener: 77, 85
+        Second listener: 77, 85
+        Third listener: 77, 85
+    */
+    
 ### SprigganTimer
 
 Implements a pausable timer.
