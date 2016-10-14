@@ -26,6 +26,7 @@ window.onload = function() {
     document.body.style.color = "white"
     document.body.style.background = "black"
     document.body.style.overflow = "hidden"
+    document.body.ondragstart = function() { return false }
     var callback
     var contentManager = new SprigganContentManager({
         progress: function(loaded, total) {
