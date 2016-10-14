@@ -629,6 +629,7 @@ function SprigganViewport(width, height, horizontalAlignment, verticalAlignment,
     this.element.style.width = width + "em"
     this.element.style.height = height + "em"
     this.element.style.overflow = "hidden"
+    this.element.style.pointerEvents = "none"
     document.body.appendChild(this.element)
     
     this.resize()
@@ -680,6 +681,7 @@ function SprigganGroup(parent, clicked) {
     this.clicked = clicked
     this.construct()
     this.element.style.position = "absolute"
+    this.element.style.pointerEvents = "none"
 }
 
 SprigganMakeConstructable(SprigganGroup)
@@ -697,9 +699,11 @@ function SprigganSprite(parent, contentManager, spriteSheetUrl, clicked) {
     this.construct()
     this.element.style.position = "absolute"
     this.element.style.overflow = "hidden"
+    this.element.style.pointerEvents = "none"
     this.spriteSheet = contentManager.get(SprigganSpriteSheet, spriteSheetUrl)
     this.spriteSheet.sprites.push(this)
     this.imageElement = this.spriteSheet.image.cloneNode(true)
+    this.imageElement.style.pointerEvents = "auto"
     this.element.appendChild(this.imageElement)
 }
 
