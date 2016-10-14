@@ -226,7 +226,9 @@ scaled to fit the user's display or browser window.
 
     var width = 320  // pixels
     var height = 240 // pixels
-    var viewport = new SprigganViewport(width, height, function(){
+    var horizontalAlignment = "centered" // "left", "right" or null/undefined/"centered"/"centred"/"middle"
+    var verticalAlignment = "centered" // "top", "bottom" or null/undefined/"centered"/"centred"/"middle"
+    var viewport = new SprigganViewport(width, height, horizontalAlignment, verticalAlignment, function(){
         // Called when the viewport is clicked.
     })
     viewport.pause() // Pauses every group and/or sprite inside.

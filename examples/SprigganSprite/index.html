@@ -18,7 +18,9 @@
                     var object = new SprigganSprite(viewport, contentManager, "atlas")
                     object.loop("objectIdle")
                     object.move(63, 30)
-                    var playPause = new SprigganSprite(viewport, contentManager, "atlas", function() {
+                    
+                    var playPauseViewport = new SprigganViewport(127, 71, "left", "bottom")
+                    var playPause = new SprigganSprite(playPauseViewport, contentManager, "atlas", function() {
                         if (viewport.paused) {
                             viewport.resume()
                             playPause.loop("pause")
@@ -28,7 +30,9 @@
                         }
                     })
                     playPause.loop("pause")
-                    var moveImmediately = new SprigganSprite(viewport, contentManager, "atlas", function(){
+                    
+                    var movementViewport = new SprigganViewport(127, 71, "right", "bottom")
+                    var moveImmediately = new SprigganSprite(movementViewport, contentManager, "atlas", function(){
                         function CreateTeleportEffect(x, y) {
                             var sprite = new SprigganSprite(viewport, contentManager, "atlas")
                             sprite.move(x, y)
@@ -45,7 +49,7 @@
                         CreateTeleportEffect(x, y)
                     })
                     moveImmediately.loop("moveImmediately")
-                    var moveOverSeconds = new SprigganSprite(viewport, contentManager, "atlas", function() {
+                    var moveOverSeconds = new SprigganSprite(movementViewport, contentManager, "atlas", function() {
                         var x = Math.round(Math.random() * 80 + 25)
                         var y = Math.round(Math.random() * 30 + 10)
                         object.loop("objectMoving")
@@ -57,7 +61,7 @@
                         })
                     })
                     moveOverSeconds.loop("moveOverSeconds")
-                    var moveAtPixelsPerSecond = new SprigganSprite(viewport, contentManager, "atlas", function() {
+                    var moveAtPixelsPerSecond = new SprigganSprite(movementViewport, contentManager, "atlas", function() {
                         var x = Math.round(Math.random() * 80 + 25)
                         var y = Math.round(Math.random() * 30 + 10)
                         object.loop("objectMoving")

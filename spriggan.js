@@ -617,12 +617,14 @@ window.onresize = function() {
     for (var i = 0; i < SprigganAllViewports.length; i++) SprigganAllViewports[i].resize()
 }
 
-function SprigganViewport(width, height, clicked) {
+function SprigganViewport(width, height, horizontalAlignment, verticalAlignment, clicked) {
     this.width = width
     this.height = height
+    this.horizontalAlignment = horizontalAlignment
+    this.verticalAlignment = verticalAlignment
     this.clicked = clicked
     this.construct()
-    this.element.style.position = "fixed"
+    this.element.style.position = "absolute"
     this.element.style.width = width + "em"
     this.element.style.height = height + "em"
     this.element.style.overflow = "hidden"
@@ -638,8 +640,29 @@ SprigganViewport.prototype.resize = function() {
     
     this.element.style.fontSize = Math.min(windowWidth / this.width, windowHeight / this.height) + "px"
         
-    this.element.style.left = ((windowWidth - this.element.clientWidth) / 2) + "px"
-    this.element.style.top = ((windowHeight - this.element.clientHeight) / 2) + "px"
+    switch (this.horizontalAlignment) {
+        case "left":
+            this.element.style.left = "0px"
+            break
+        case "right":
+            this.element.style.left = (windowWidth - this.element.clientWidth) + "px"
+            break
+        default:
+            this.element.style.left = ((windowWidth - this.element.clientWidth) / 2) + "px"
+            break
+    }
+    
+    switch (this.verticalAlignment) {
+        case "top":
+            this.element.style.top = "0px"
+            break;
+        case "bottom":
+            this.element.style.top = (windowHeight - this.element.clientHeight) + "px"
+            break;
+        default:
+            this.element.style.top = ((windowHeight - this.element.clientHeight) / 2) + "px"
+            break;
+    }
 }
 
 SprigganMakeConstructable(SprigganViewport)
