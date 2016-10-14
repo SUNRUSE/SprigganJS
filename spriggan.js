@@ -25,6 +25,7 @@ window.onload = function() {
     document.body.style.transition = "background 0.5s linear, color 0.5s linear"
     document.body.style.color = "white"
     document.body.style.background = "black"
+    document.body.style.overflow = "hidden"
     var callback
     var contentManager = new SprigganContentManager({
         progress: function(loaded, total) {
