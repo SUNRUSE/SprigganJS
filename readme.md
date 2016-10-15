@@ -100,6 +100,31 @@ Reads the text from a file as a JSON object.
         }
     }
     
+### SprigganJavaScript
+
+Reads the text from a file as a JavaScript value.
+This allows you to dynamically load scripts.
+However, this should only be used with trusted files; do not ever allow users to
+submit files to be read by this, or direct where it will load files from.
+
+    function SprigganBoot(contentManager) {
+        contentManager.add(SprigganJavaScript, "path/to/javaScript/file")
+        return function() {
+            contentManager.get(SprigganJavaScript, "path/to/javaScript/file")(3)
+            contentManager.get(SprigganJavaScript, "path/to/javaScript/file")(17)
+        }
+    }
+    
+    /* Content of "path/to/javaScript/file": */
+    function(parameter) {
+        alert("You've called dynamic script with " + parameter + ".")
+    }
+    
+    /* This should show:
+        You've called dynamic script with 3.
+        You've called dynamic script with 17.
+    */
+    
 ### SprigganSpriteSheet
 
 Combines a PNG image and JSON file describing the sprite frames within it.  The

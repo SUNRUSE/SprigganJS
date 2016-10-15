@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    </head>
+    <body>
+        <div id="loading">Now loading... (please ensure that JavaScript is enabled)</div>
+        <script src="../../spriggan.js"></script>
+        <script>
+            function SprigganBoot(contentManager) {
+                contentManager.add(SprigganJavaScript, "path/to/javaScript/file")
+                return function() {
+                    contentManager.get(SprigganJavaScript, "path/to/javaScript/file")(3)
+                    contentManager.get(SprigganJavaScript, "path/to/javaScript/file")(17)
+                    /* This should show:
+                        You've called dynamic script with 3.
+                        You've called dynamic script with 17.
+                    */
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,3 @@
+function(parameter) {
+    alert("You've called dynamic script with " + parameter + ".")
+}
