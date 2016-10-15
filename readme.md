@@ -116,7 +116,7 @@ submit files to be read by this, or direct where it will load files from.
     }
     
     /* Content of "path/to/javaScript/file": */
-    function(parameter) {
+    return function(parameter) {
         alert("You've called dynamic script with " + parameter + ".")
     }
     

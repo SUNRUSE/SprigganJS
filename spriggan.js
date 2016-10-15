@@ -238,7 +238,7 @@ function SprigganJavaScript(url, onSuccess) {
     return SprigganText(url, function(text){
         var value
         try {
-            value = eval("(" + text + ")")
+            value = (new Function(text))()
         } catch(e) {
             throw new Error("Failed to parse \"" + url + "\" as JavaScript")
         }
