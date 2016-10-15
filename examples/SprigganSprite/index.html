@@ -73,6 +73,17 @@
                         })
                     })
                     moveAtPixelsPerSecond.loop("moveAtPixelsPerSecond")
+                    
+                    var hideShow = new SprigganSprite(movementViewport, contentManager, "atlas", function() {
+                        if (object.hidden) {
+                            object.show()
+                            hideShow.loop("hide")
+                        } else {
+                            object.hide()
+                            hideShow.loop("show")
+                        }
+                    })
+                    hideShow.loop("hide")
                 }
             }
         </script>

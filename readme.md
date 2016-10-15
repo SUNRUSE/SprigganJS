@@ -231,8 +231,18 @@ scaled to fit the user's display or browser window.
     var viewport = new SprigganViewport(width, height, horizontalAlignment, verticalAlignment, function(){
         // Called when the viewport is clicked.
     })
+    
     viewport.pause() // Pauses every group and/or sprite inside.
     viewport.resume() // Unpauses every group and/or sprite inside.
+    
+    viewport.hide() // Hides the viewport and all contained groups/sprites.
+                    // Any animations/movements continue.
+                    // Clicks on underlying objects are no longer blocked by the sprites inside this viewport.
+    
+    viewport.show() // Shows the viewport and all contained groups/sprites.
+                    // Any animations/movements continue.
+                    // Clicks on underlying objects are now blocked by the sprites inside this viewport.        
+    
     viewport.dispose() // Deletes the viewport.
     
 ### SprigganGroup
@@ -260,6 +270,14 @@ SprigganViewport.  This allows them to be controlled as a single object.
     
     group.pause() // Pauses every group and/or sprite inside.
     group.resume() // Unpauses every group and/or sprite inside.
+    
+    group.hide() // Hides the group and all contained groups/sprites.
+                 // Any animations/movements continue.
+                 // Clicks on underlying objects are no longer blocked by the sprites inside this group.
+    
+    group.show() // Shows the group and all contained groups/sprites.
+                 // Any animations/movements continue.
+                 // Clicks on underlying objects are now blocked by the sprites inside this group.       
     
     group.dispose() // Deletes the group.
     
@@ -298,6 +316,14 @@ You can find an example of this in examples/SprigganSprite.
     sprite.pause() // Pauses any animation/movement.
                    // Changes in animation/movement will be frozen until resumed.
     sprite.resume() // Unpauses any animation/movement.
+    
+    sprite.hide() // Hides the sprite.
+                  // Any animations/movements continue.
+                  // Clicks on underlying objects are no longer blocked.
+    
+    sprite.show() // Shows the sprite.
+                  // Any animations/movements continue.
+                  // Clicks on underlying objects are now blocked.    
     
     sprite.dispose() // Deletes the sprite.
     

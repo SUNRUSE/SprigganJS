@@ -482,6 +482,20 @@ function SprigganMakeParent(type) {
     })
 }
 
+function SprigganMakeHideable(type) {
+    type.prototype.onConstruction.push(function(){
+        this.hidden = false
+    })
+    type.prototype.hide = function() {
+        this.element.style.visibility = "hidden"
+        this.hidden = true
+    }
+    type.prototype.show = function() {
+        this.element.style.visibility = "visible"
+        this.hidden = false
+    }
+}
+
 function SprigganMakePausable(type, onPausing, onResuming) {
     type.prototype.onPausing = []
     type.prototype.onResuming = []
@@ -677,6 +691,7 @@ SprigganMakeDisposable(SprigganViewport, function() {
 SprigganMakePausable(SprigganViewport)
 SprigganMakeParent(SprigganViewport)
 SprigganMakeElementWrapper(SprigganViewport)
+SprigganMakeHideable(SprigganViewport)
 SprigganMakeClickable(SprigganViewport)
 
 function SprigganGroup(parent, clicked) {
@@ -690,6 +705,7 @@ SprigganMakeConstructable(SprigganGroup)
 SprigganMakeDisposable(SprigganGroup)
 SprigganMakePausable(SprigganGroup)
 SprigganMakeElementWrapper(SprigganGroup)
+SprigganMakeHideable(SprigganGroup)
 SprigganMakeParent(SprigganGroup)
 SprigganMakeChild(SprigganGroup)
 SprigganMakeClickable(SprigganGroup)
@@ -718,6 +734,7 @@ SprigganMakePausable(SprigganSprite, function(){
     if (this.animation) this.animation.resume()
 })
 SprigganMakeElementWrapper(SprigganSprite)
+SprigganMakeHideable(SprigganSprite)
 SprigganMakeChild(SprigganSprite)
 SprigganMakeClickable(SprigganSprite)
 SprigganMakeMovable(SprigganSprite)
