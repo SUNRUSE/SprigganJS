@@ -81,6 +81,11 @@ SprigganEventRecurring.prototype.listenOnce = function(callback) {
     this.oneTimeCallbacks.push(callback)
 }
 
+SprigganEventRecurring.prototype.unlisten = function(callback) {
+    SprigganRemoveByValue(this.callbacks, callback)
+    SprigganRemoveByValue(this.oneTimeCallbacks, callback)
+}
+
 function SprigganTimer(seconds, configuration) {   
     this.seconds = seconds
     this.milliseconds = seconds * 1000
