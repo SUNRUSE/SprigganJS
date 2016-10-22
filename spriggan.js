@@ -795,3 +795,27 @@ SprigganSprite.prototype.loop = function(animationName) {
         PlayAgain()
     }
 }
+
+function SprigganWrite(parent, contentManager, spriteSheetName, data, text) {
+    var group = new SprigganGroup(parent)
+    var x = 0
+    var y = 0
+    for (var i = 0; i < text.length; i++) {
+        var character = text.charAt(i)
+        if (character == "\n") {
+            x = 0
+            y += data.lineSpacing
+            continue
+        }
+        
+        // Non-whitespace.
+        if (/^[^\s]$/.test(character)) {
+            var sprite = new SprigganSprite(group, contentManager, spriteSheetName)
+            sprite.loop(character)
+            sprite.move(x, y)
+        }
+        
+        x += data.kerning[character] ? data.kerning[character] : data.kerning["default"]
+    }
+    return group
+}

@@ -352,6 +352,25 @@ You can find an example of this in examples/SprigganSprite.
     
     sprite.dispose() // Deletes the sprite.
     
+### SprigganWrite
+
+Creates and returns a SprigganGroup which renders a string of text.
+Each letter is rendered by playing the appropriate animation; "hello" loops
+the animations "h", "e", "l", "l" and "o".
+
+An example can be found in "examples/SprigganWrite".
+    
+    var font = {
+        lineSpacing: 14,    // 14 pixels between the top of one line and the top of the next.
+        kerning: {
+            a: 10,          // 10 pixels between the left of "a" and the left of the following character.
+            b: 16,          // 16 pixels between the left of "b" and the left of the following character.
+            "default": 8    // 8 pixels between the left of any other character and the left of the following character.
+        }
+    }
+    
+    var group = SprigganWrite(viewportOrGroup, contentManager, urlToSpriteSheet, font, "This is text to\nrender.")
+    
 ### SprigganEventOnce
 
 An event which can only be raised one time.

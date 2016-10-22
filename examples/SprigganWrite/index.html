@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    </head>
+    <body>
+        <div id="loading">Now loading... (please ensure that JavaScript is enabled)</div>
+        <script src="../../spriggan.js"></script>
+        <script>
+            function SprigganBoot(contentManager) {
+                contentManager.add(SprigganSpriteSheet, "font")
+                return function() {
+                    var viewport = new SprigganViewport(428, 240)
+                    var font = {
+                        lineSpacing: 14,
+                        kerning: {
+                            "default": 6,
+                            "i": 2,
+                            "j": 2,
+                            "c": 5,
+                            "f": 4,
+                            "t": 5,
+                            "r": 5,
+                            "k": 5,
+                            "l": 4,
+                            " ": 3,
+                            ":": 2,
+                            ";": 3,
+                            "!": 2,
+                            "?": 5,
+                            "(": 4,
+                            ")": 4,
+                            "[": 4,
+                            "]": 4,
+                            "{": 4,
+                            "}": 4,
+                            "\t": 10,
+                            "-": 4,
+                            "'": 1,
+                            "\"": 4,
+                            "=": 5,
+                            "%": 5,
+                            "/": 5,
+                            "\\": 5,
+                            ",": 3,
+                            "I": 2,
+                            "|": 2
+                        }
+                    }
+                    var group = SprigganWrite(viewport, contentManager, "font", font, "ABCDEFGHIJKLMNOPQRSTU\nVWXYZabcdefghijklmnop\nqrstuvwxyz01234567890\n\nThis is an example of how a typical sentence might look; punctuation\nworks like this, give or take: hello world.\n(hey!)[these are brackets?]{as are these*}\n\t*for some bracketed things\n\nhere's a thing which includes \"speech marks\" as they're called.\n3+4=7^5\nThis algorithm is #1 and costs $0!\nWorks 100% of the time, 60% of the time!\nPlease do try this @home!  ||piped||\nIt also supports forward slashes/backslashes\\tildes~approximately.\n\n_Anyway, gotta-dash_")
+                    document.body.style.background = "darkslateblue"
+                }
+            }
+        </script>
+    </body>
+</html>
