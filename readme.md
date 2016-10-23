@@ -361,7 +361,9 @@ the animations "h", "e", "l", "l" and "o".
 Examples can be found in "examples/SprigganWrite" and "examples/SprigganWrite2".
     
     var font = {
-        lineSpacing: 14,    // 14 pixels between the top of one line and the top of the next.
+        lineSpacing: 2,    // 2 pixels between the top of bottom line and the top of the next.
+        lineHeight: 10,    // Characters should generally be 10 pixels high.
+        letterSpacing: 1,  // Add one extra pixel of space between characters horizontally.
         kerning: {
             a: 10,          // 10 pixels between the left of "a" and the left of the following character.
             b: 16,          // 16 pixels between the left of "b" and the left of the following character.
