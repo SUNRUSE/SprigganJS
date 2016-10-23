@@ -358,7 +358,7 @@ Creates and returns a SprigganGroup which renders a string of text.
 Each letter is rendered by playing the appropriate animation; "hello" loops
 the animations "h", "e", "l", "l" and "o".
 
-An example can be found in "examples/SprigganWrite".
+Examples can be found in "examples/SprigganWrite" and "examples/SprigganWrite2".
     
     var font = {
         lineSpacing: 14,    // 14 pixels between the top of one line and the top of the next.
@@ -369,7 +369,10 @@ An example can be found in "examples/SprigganWrite".
         }
     }
     
-    var group = SprigganWrite(viewportOrGroup, contentManager, urlToSpriteSheet, font, "This is text to\nrender.")
+    var horizontalAlignment = "centered" // null/undefined/"left", "right" or "center"/"centre"/"centered"/"centred"/"middle"
+    var verticalAlignment = "centered" // null/undefined/"top", "bottom" or "center"/"centre"/"centered"/"centred"/"middle"    
+    
+    var group = SprigganWrite(viewportOrGroup, contentManager, urlToSpriteSheet, font, "This is text to\nrender.", horizontalAlignment, verticalAlignment)
     
 ### SprigganEventOnce
 

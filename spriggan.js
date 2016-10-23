@@ -796,26 +796,92 @@ SprigganSprite.prototype.loop = function(animationName) {
     }
 }
 
-function SprigganWrite(parent, contentManager, spriteSheetName, data, text) {
-    var group = new SprigganGroup(parent)
-    var x = 0
-    var y = 0
+function SprigganCharacterWidth(data, character) {
+    return data.kerning[character] ? data.kerning[character] : data.kerning["default"]
+}
+
+function SprigganTextWidth(data, text) {
+    var lineWidth = 0
+    var greatestWidth = 0
     for (var i = 0; i < text.length; i++) {
         var character = text.charAt(i)
+        
         if (character == "\n") {
-            x = 0
-            y += data.lineSpacing
+            lineWidth = 0
             continue
         }
         
-        // Non-whitespace.
-        if (/^[^\s]$/.test(character)) {
-            var sprite = new SprigganSprite(group, contentManager, spriteSheetName)
-            sprite.loop(character)
-            sprite.move(x, y)
+        lineWidth += SprigganCharacterWidth(data, character)
+        if (i > 0) lineWidth += data.letterSpacing
+        
+        if (SprigganCharacterIsWhiteSpace(character)) continue
+        if (lineWidth > greatestWidth) greatestWidth = lineWidth
+    }
+    return greatestWidth
+}
+
+function SprigganCharacterIsWhiteSpace(character) {
+    return /^\s$/.test(character)
+}
+
+function SprigganWrite(parent, contentManager, spriteSheetName, data, text, horizontal, vertical) {
+    var width = SprigganTextWidth(data, text)
+    
+    var group = new SprigganGroup(parent)
+    var y
+    
+    switch (vertical) {
+        case "top":
+        case null:
+        case undefined:
+            y = 0
+            break
+            
+        case "bottom":
+            var lines = text.split("\n").length
+            y = -(lines * data.lineHeight + (lines - 1) * data.lineSpacing)
+            break
+            
+        default:
+            var lines = text.split("\n").length
+            y = Math.round(-(lines * data.lineHeight + (lines - 1) * data.lineSpacing) / 2)
+            break
+    }
+    
+    var lines = text.split("\n")
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i]
+        var x
+        
+        switch (horizontal) {
+            case "left":
+            case null:
+            case undefined:
+                x = 0
+                break
+                
+            case "right":
+                x = Math.round(-SprigganTextWidth(data, line))
+                break
+            
+            default:
+                x = Math.round(SprigganTextWidth(data, line) / -2)
+                break
         }
         
-        x += data.kerning[character] ? data.kerning[character] : data.kerning["default"]
+        for (var j = 0; j < line.length; j++) {
+            var character = line.charAt(j)
+            
+            if (!SprigganCharacterIsWhiteSpace(character)) {
+                var sprite = new SprigganSprite(group, contentManager, spriteSheetName)
+                sprite.loop(character)
+                sprite.move(x, y)
+            }
+            
+            x += SprigganCharacterWidth(data, character) + data.letterSpacing
+        }
+        
+        y += data.lineSpacing + data.lineHeight
     }
     return group
 }

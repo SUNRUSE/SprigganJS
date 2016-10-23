@@ -9,8 +9,9 @@
         <script>
             function SprigganBoot(contentManager) {
                 contentManager.add(SprigganSpriteSheet, "font")
+                contentManager.add(SprigganSpriteSheet, "crosshair")
                 return function() {
-                    var viewport = new SprigganViewport(428, 240)
+                    var viewport = new SprigganViewport(640, 480)
                     var font = {
                         lineSpacing: 6,
                         lineHeight: 8,
@@ -51,7 +52,28 @@
                             ".": 1
                         }
                     }
-                    var group = SprigganWrite(viewport, contentManager, "font", font, "ABCDEFGHIJKLMNOPQRSTU\nVW.X.YZabcdefghijklmnop\nqrstuvwxyz01234567890\n\nThis is an example of how a typical sentence might look; punctuation\nworks like this, give or take: hello world.\n(hey!)[these are brackets?]{as are these*}\n\t*for some bracketed things\n\nhere's a thing which includes \"speech marks\" as they're called.\n3+4=7^5\nThis algorithm is #1 and costs $0!\nWorks 100% of the time, 60% of the time!\nPlease do try this @home!  ||piped||\nIt also supports forward slashes/backslashes\\tildes~approximately.\n\n_Anyway, gotta-dash_")
+                    
+                    function CreateText(horizontal, vertical, x, y) {
+                        var crosshair = new SprigganSprite(viewport, contentManager, "crosshair")
+                        crosshair.loop("crosshair")
+                        crosshair.move(x, y)
+                    
+                        var group = SprigganWrite(viewport, contentManager, "font", font, "This is aligned to the " + horizontal + " " + vertical + ".\n|:!|:!|:!|:!|:!|:!|:!|:!|:!|:!|:!|:!|:!|:!|:!|:!|:!|:!\nAnother line follows.\nAnd another, this one the actual longest.", horizontal, vertical)
+                        group.move(x, y)
+                    }
+                    
+                    CreateText("left", "top", 20, 10)                    
+                    CreateText("centre", "top", 500, 10)
+                    CreateText("right", "top", 350, 40)
+                    
+                    CreateText("left", "middle", 20, 150)                    
+                    CreateText("centre", "middle", 500, 150)
+                    CreateText("right", "middle", 350, 170)
+                    
+                    CreateText("left", "bottom", 20, 310)                    
+                    CreateText("centre", "bottom", 500, 380)
+                    CreateText("right", "bottom", 350, 330)
+                    
                     document.body.style.background = "darkslateblue"
                 }
             }
