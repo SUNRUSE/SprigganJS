@@ -824,9 +824,7 @@ function SprigganCharacterIsWhiteSpace(character) {
     return /^\s$/.test(character)
 }
 
-function SprigganWrite(parent, contentManager, spriteSheetName, data, text, horizontal, vertical) {
-    var width = SprigganTextWidth(data, text)
-    
+function SprigganWrite(parent, contentManager, spriteSheetName, data, text, horizontal, vertical) {    
     var group = new SprigganGroup(parent)
     var y
     
