@@ -110,7 +110,8 @@ function RunAseprite(input, png, json, then, grunt, done) {
     child_process.spawn("aseprite", [
         "--batch", 
         "--sheet", png, 
-        "--trim", "--shape-padding", "1",
+        "--trim",
+        "--sheet-pack",
         "--data", json,
         "--format", "json-array",
         "--list-tags",
