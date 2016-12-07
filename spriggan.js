@@ -285,6 +285,7 @@ function SprigganSpriteSheet(url, onSuccess) {
         }
         
         value.image.style.touchAction = "manipulation" // Improves responsiveness on IE/Edge on touchscreens.
+        value.image.style.webkitBackfaceVisibility = "hidden" // Prevents a "pop" on Chrome when all transitions have finished.
         
         if ("imageRendering" in value.image.style) {
             value.image.style.imageRendering = "pixelated" // Chrome.
@@ -713,6 +714,7 @@ function SprigganGroup(parent, clicked) {
     this.clicked = clicked
     this.construct()
     this.element.style.position = "absolute"
+    this.element.style.webkitBackfaceVisibility = "hidden" // Prevents a "pop" on Chrome when all transitions have finished.
 }
 
 SprigganMakeConstructable(SprigganGroup)
