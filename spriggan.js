@@ -505,7 +505,7 @@ function SprigganMakeHideable(type) {
         this.hidden = true
     }
     type.prototype.show = function() {
-        this.element.style.visibility = "visible"
+        this.element.style.visibility = "inherit"
         this.hidden = false
     }
 }
