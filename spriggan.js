@@ -303,8 +303,15 @@ function SprigganSpriteSheet(url, onSuccess) {
         }
         
         value.image.style.position = "absolute"
-        value.image.style.width = image.width + "em"
-        value.image.style.height = image.height + "em"
+        
+        // The image and the wrapping element are scaled up slightly to overcome
+        // browser rounding errors which can cause seams down the edge of
+        // sprites, or gaps between sprites which should meet.
+        var imageScale = 1
+        var wrapperScale = 1
+        
+        value.image.style.width = image.width * imageScale + "em"
+        value.image.style.height = image.height * imageScale + "em"
         
         var animations = {}
         
@@ -313,13 +320,19 @@ function SprigganSpriteSheet(url, onSuccess) {
             var converted = []
             for (var i = 0; i < animation.length; i++) {
                 var frame = json.frames[animation[i]]
+                var left = frame[0]
+                var right = frame[2]
+                var width = right - left
+                var top = frame[1]
+                var bottom = frame[3]
+                var height = bottom - top
                 converted.push({
-                    imageLeft: -frame[0] + "em",
-                    imageTop: -frame[1] + "em",
-                    wrapperWidth: (1 + frame[2] - frame[0]) + "em",
-                    wrapperHeight: (1 + frame[3] - frame[1]) + "em",
-                    wrapperMarginLeft: (frame[0] - frame[4]) + "em",
-                    wrapperMarginTop: (frame[1] - frame[5]) + "em",
+                    imageLeft: -(left * imageScale + ((width * imageScale) - (width * wrapperScale)) * 0.5) + "em",
+                    imageTop: -(top * imageScale + ((height * imageScale) - (height * wrapperScale)) * 0.5) + "em",
+                    wrapperWidth: ((1 + width) * wrapperScale) + "em",
+                    wrapperHeight: ((1 + height) * wrapperScale) + "em",
+                    wrapperMarginLeft: ((left - frame[4]) * wrapperScale) + "em",
+                    wrapperMarginTop: ((top - frame[5]) * wrapperScale) + "em",
                     duration: frame[6]
                 })
             }
