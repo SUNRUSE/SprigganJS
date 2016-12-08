@@ -584,8 +584,10 @@ function SprigganMakeMovable(type) {
         }
         if ("transform" in this.element.style) {
             // IE10+, Edge, Firefox, Chrome.
+            this.element.offsetHeight // Forces a reflow; required for transitions to work.
             this.element.style.transition = "initial"
             this.element.style.transform = "translate(" + x + "em, " + y + "em)"
+            this.element.offsetHeight // Forces a reflow; required for transitions to work.
         } else {
             // IE9-.
             this.element.style.left = x  + "em"
@@ -605,16 +607,19 @@ function SprigganMakeMovable(type) {
         var currentY = instance.y = function() { return fromY + (y - fromY) * timer.progress() }
         if ("transform" in this.element.style) {
              // IE10+, Edge, Firefox, Chrome.
-            instance.element.offsetHeight // Forces a reflow; required for transitions to work.
             timer = instance.movement = new SprigganTimer(seconds, {
                 completed: then,
                 paused: function() {
+                    instance.element.offsetHeight // Forces a reflow; required for transitions to work.
                     instance.element.style.transition = "initial"
                     instance.element.style.transform = "translate(" + currentX() + "em, " + currentY() + "em)"
+                    instance.element.offsetHeight // Forces a reflow; required for transitions to work.
                 }, 
                 resumed: function() {
+                    instance.element.offsetHeight // Forces a reflow; required for transitions to work.
                     instance.element.style.transition = "transform " + (seconds - timer.elapsedSeconds()) + "s linear"
                     instance.element.style.transform = "translate(" + x + "em, " + y + "em)"
+                    instance.element.offsetHeight // Forces a reflow; required for transitions to work.
                 }
             })
         } else {
