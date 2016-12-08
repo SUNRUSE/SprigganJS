@@ -230,7 +230,7 @@ function SprigganJson(url, onSuccess) {
         try {
             value = JSON.parse(text) // Chrome, Firefox, Edge.
         } catch(e) {
-            throw new Error("Failed to parse \"" + url + "\" as JSON")
+            throw new Error("Failed to parse \"" + url + "\" as JSON; \"" + e + "\"")
         }
         onSuccess(value)
     })
@@ -242,7 +242,7 @@ function SprigganJavaScript(url, onSuccess) {
         try {
             value = (new Function(text))()
         } catch(e) {
-            throw new Error("Failed to parse \"" + url + "\" as JavaScript")
+            throw new Error("Failed to parse \"" + url + "\" as JavaScript; \"" + e + "\"")
         }
         onSuccess(value)
     })
@@ -254,6 +254,8 @@ function SprigganImage(url, onSuccess) {
         onSuccess(image)
     }
     image.onerror = function() {
+        // Unfortunately, the event object contains nothing here, 
+        // so we can't tell the user why the image could not be loaded.
         throw new Error("Failed to load \"" + url + "\" as a PNG image")
     }
     image.src = url
