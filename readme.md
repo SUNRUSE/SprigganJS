@@ -186,6 +186,9 @@ a symbolic link or shortcut to where it is installed.
         grunt.initConfig({
             "sprigganjs-aseprite": {
                 a: {
+                    options: {
+                        sheetWidth: 128
+                    },
                     files: [{
                         expand: true,
                         src: "**/*.ase",
@@ -209,6 +212,9 @@ Given "assets/subdirectoryA/subdirectoryB/test.ase", creates
 Every "tag" in the timeline is exported as an animation using the tag's name.
 
 The centre pixel (or pixel to the lower right) is the "origin" of the sprite.
+
+The sheetWidth/sheetHeight options are not required, but specify a maximum width
+and/or height in pixels for the sprite atlas generated when given.
 
 ### SprigganSound
 

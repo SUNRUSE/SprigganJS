@@ -106,21 +106,38 @@ function WriteFile(file, content, then, grunt, done) {
 }
 
 var child_process = require("child_process")
-function RunAseprite(input, png, json, then, grunt, done) {
-    child_process.spawn("aseprite", [
+function RunAseprite(input, png, json, then, grunt, options, done) {
+    var args = [
         "--batch", 
         "--sheet", png, 
-        "--trim",
-        "--sheet-pack",
-        "--data", json,
-        "--format", "json-array",
-        "--list-tags",
-        input]).on("exit", function(status){
-            if (status != 0) {
-                grunt.log.error("Failed to invoke Aseprite to convert \"", input, "\" to \"", png, "\" and \"", json, "\"; error code ", status, " was encountered")
-                done()
-            } else then()
-        })
+        "--trim"
+    ]
+    
+    if (options.sheetWidth) {
+        args.push("--sheet-width")
+        args.push("" + options.sheetWidth)
+    }
+    
+    if (options.sheetHeight) {
+        args.push("--sheet-height")
+        args.push("" + options.sheetHeight)
+    }    
+    
+    args.push("--shape-padding")
+    args.push("1")
+    args.push("--data")
+    args.push(json)
+    args.push("--format")
+    args.push("json-array")
+    args.push("--list-tags")
+    args.push(input)
+    
+    child_process.spawn("aseprite", args).on("exit", function(status){
+        if (status != 0) {
+            grunt.log.error("Failed to invoke Aseprite to convert \"", input, "\" to \"", png, "\" and \"", json, "\"; error code ", status, " was encountered")
+            done()
+        } else then()
+    })
 }
 
 var mkdirp = require("mkdirp")
@@ -134,7 +151,7 @@ function EnsureDirectoryExists(path, then, grunt, done) {
     })
 }
 
-function RunFile(src, dest, grunt, done) {
+function RunFile(src, dest, grunt, options, done) {
     var destJsonTemp = dest + ".temp.json"
     var destJson = dest + ".json"
     var destPng = dest + ".png"        
@@ -143,7 +160,7 @@ function RunFile(src, dest, grunt, done) {
     function DeletePng(){ DeleteIfExists(destPng, DeleteTemporaryJson, grunt, done) }    
     function DeleteTemporaryJson(){ DeleteIfExists(destJsonTemp, DeleteGeneratedJson, grunt, done) }    
     function DeleteGeneratedJson(){ DeleteIfExists(destJson, InvokeAseprite, grunt, done) }    
-    function InvokeAseprite() { RunAseprite(src, destPng, destJsonTemp, ReadTemporaryJson, grunt, done) }
+    function InvokeAseprite() { RunAseprite(src, destPng, destJsonTemp, ReadTemporaryJson, grunt, options, done) }
     function EnsurePngExists() { EnsureExists(destPng, EnsureTemporaryJsonExists, grunt, done) }
     function EnsureTemporaryJsonExists() { EnsureExists(destJsonTemp, ReadTemporaryJson, grunt, done) }
     function ReadTemporaryJson() { ReadFile(destJsonTemp, ConvertJson, grunt, done) }
@@ -173,10 +190,11 @@ function RunTask(grunt) {
         remaining--
         if (!remaining) done()
     }
+    var options = this.options()
     this.files.forEach(function(filePair) {
         filePair.src.forEach(function(src) {
             remaining++
-            RunFile(src, filePair.dest, grunt, PartDone)
+            RunFile(src, filePair.dest, grunt, options, PartDone)
         })
     })
 }
