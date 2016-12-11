@@ -526,9 +526,9 @@ function SprigganMakePausable(type, onPausing, onResuming) {
         else
             this.paused = false
     })
-    type.prototype.onDisposing = function() {
+    type.prototype.onDisposal.push(function() {
         this.pause()
-    }
+    })
     
     type.prototype.pause = function() {
         // We don't check if this is paused here as this would break the following scenario:
