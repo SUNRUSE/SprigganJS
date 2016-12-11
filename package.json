@@ -1,6 +1,6 @@
 {
   "name": "sprigganjs",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "A \"vanilla\" JavaScript library for creating simple, event-driven pixel art games in your browser.",
   "main": "index.js",
   "directories": {
